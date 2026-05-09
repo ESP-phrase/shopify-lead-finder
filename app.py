@@ -31,8 +31,47 @@ from bio_dork import (
 ACCOUNTS_FILE = "accounts.txt"
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("FLASK_SECRET") or secrets.token_hex(32)
+
+_FLASK_SECRET = os.environ.get("FLASK_SECRET")
+if _FLASK_SECRET:
+    app.secret_key = _FLASK_SECRET
+elif os.environ.get("FLASK_ENV") == "production":
+    raise RuntimeError(
+        "FLASK_SECRET env var required in production. "
+        "Generate with: python -c \"import secrets; print(secrets.token_hex(32))\""
+    )
+else:
+    # Dev only — sessions invalidate on every restart, which is fine locally
+    app.secret_key = secrets.token_hex(32)
+    print("[warn] Using ephemeral FLASK_SECRET (dev mode)", file=sys.stderr)
+
 db.init_db()
+
+# Stripe — wired but lazy. If STRIPE_SECRET_KEY is set, we use real
+# Checkout. Otherwise fallback to test-mode (manual credit add).
+import bcrypt
+try:
+    import stripe
+except ImportError:
+    stripe = None
+
+STRIPE_SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY")
+STRIPE_WEBHOOK_SECRET = os.environ.get("STRIPE_WEBHOOK_SECRET")
+if stripe and STRIPE_SECRET_KEY:
+    stripe.api_key = STRIPE_SECRET_KEY
+
+
+def hash_password(pw: str) -> str:
+    return bcrypt.hashpw(pw.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+
+
+def verify_password(pw: str, password_hash: str) -> bool:
+    if not password_hash:
+        return False
+    try:
+        return bcrypt.checkpw(pw.encode("utf-8"), password_hash.encode("utf-8"))
+    except (ValueError, TypeError):
+        return False
 
 
 EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
@@ -71,6 +110,10 @@ def require_login(f):
     def wrapper(*args, **kwargs):
         if "user_id" not in session:
             return redirect(url_for("login_page", next=request.path))
+        # Stale session — user_id set but user gone from DB (e.g. deleted account)
+        if db.get_user(session["user_id"]) is None:
+            session.clear()
+            return redirect(url_for("login_page"))
         return f(*args, **kwargs)
     return wrapper
 
@@ -946,8 +989,8 @@ LANDING_PAGE = r"""<!doctype html>
       <div>
         <h5>Legal</h5>
         <ul>
-          <li><a href="#">Terms</a></li>
-          <li><a href="#">Privacy</a></li>
+          <li><a href="/terms">Terms</a></li>
+          <li><a href="/privacy">Privacy</a></li>
         </ul>
       </div>
     </div>
@@ -990,13 +1033,13 @@ AUTH_PAGE = r"""<!doctype html>
   .auth-card p.sub { color: var(--text2); font-size: 14.5px; margin: 0 0 1.75rem; line-height: 1.5; }
   label { display: block; font-size: 11px; color: var(--text2); margin: 0 0 .4rem;
     text-transform: uppercase; letter-spacing: .06em; font-weight: 600; }
-  input[type=email] {
+  input[type=email], input[type=password] {
     background: rgba(0,0,0,.35); color: var(--text);
     border: 1px solid var(--line-strong); border-radius: 9px;
     padding: .85rem 1rem; font: inherit; font-size: 14.5px;
     width: 100%; margin-bottom: 1.25rem; transition: all .12s;
   }
-  input[type=email]:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(255,122,60,.15); }
+  input[type=email]:focus, input[type=password]:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(255,122,60,.15); }
   button[type=submit] {
     width: 100%; padding: .9rem; font: inherit; font-weight: 600; cursor: pointer;
     background: var(--accent); color: #fff; border: 1px solid var(--accent);
@@ -1026,12 +1069,16 @@ AUTH_PAGE = r"""<!doctype html>
     <form method="post">
       <label>Email</label>
       <input type="email" name="email" required autofocus placeholder="you@example.com" value="{{ request.form.get('email','') }}">
+      {% if show_password %}
+        <label>Password</label>
+        <input type="password" name="password" required minlength="8" placeholder="At least 8 characters">
+      {% endif %}
       <button type="submit">{{ cta }} →</button>
     </form>
     <ul class="auth-perks">
       <li>5 free searches to start</li>
       <li>No credit card required</li>
-      <li>Email-only signup — no passwords</li>
+      <li>Cancel anytime — free tier is forever</li>
     </ul>
     <p class="switch-link">{{ switch_text|safe }}</p>
   </div>
@@ -1697,8 +1744,16 @@ SETTINGS_BODY = r"""
 
 <div class="panel danger-card">
   <h2>Danger zone</h2>
-  <p class="sub">Sign out of this device. To delete your account, email <a href="mailto:hi@shopifysift.app" style="color:var(--accent);">hi@shopifysift.app</a>.</p>
-  <a href="/logout" class="btn-danger">Log out</a>
+  <p class="sub">Permanently delete your account and all associated data (search history, leads, credits). This cannot be undone.</p>
+  <form method="post" action="/account/delete" style="display: flex; gap: .65rem; align-items: center; flex-wrap: wrap;"
+        onsubmit="return confirm('Permanently delete your account? This cannot be undone.');">
+    <input type="text" name="confirm" placeholder='Type "delete my account" to confirm'
+           style="flex: 1; min-width: 280px; background: rgba(0,0,0,.3); color: var(--text); border: 1px solid var(--line-strong); border-radius: 9px; padding: .7rem .9rem; font: inherit; font-size: 14px;" required>
+    <button type="submit" class="btn-danger" style="background: rgba(248,113,113,.18); border-color: rgba(248,113,113,.4);">Delete forever</button>
+  </form>
+  <p style="margin: 1rem 0 0; font-size: 13px; color: var(--text2);">
+    Or just <a href="/logout" style="color:var(--accent);">log out</a>.
+  </p>
 </div>
 """
 
@@ -2793,12 +2848,18 @@ PAGE = r"""<!doctype html>
           $('#ls-est').textContent = liveCounts.established;
           if ($('#ls-found')) $('#ls-found').textContent = candidatesFound;
           let status;
-          if (queryTotal > 0 && queryDone < queryTotal) {
-            status = `Query ${queryDone}/${queryTotal} · ${verifyDone} verified`;
+          if (queryTotal === 0) {
+            status = 'Starting…';
+          } else if (queryDone < queryTotal) {
+            const pct = Math.round((queryDone / queryTotal) * 100);
+            status = `Searching · ${pct}% (${queryDone}/${queryTotal} dorks)`;
+          } else if (candidatesFound === 0) {
+            status = 'No candidates found';
           } else if (verifyDone < candidatesFound) {
-            status = `Verifying ${verifyDone}/${candidatesFound}…`;
+            const pct = Math.round((verifyDone / candidatesFound) * 100);
+            status = `Verifying stores · ${pct}% (${verifyDone}/${candidatesFound})`;
           } else {
-            status = `${verifyDone}/${candidatesFound} verified`;
+            status = `Done · ${liveCounts.active} active leads`;
           }
           $('#ls-progress').textContent = status;
         }
@@ -3076,26 +3137,21 @@ def landing():
 def signup_page():
     if request.method == "POST":
         email = (request.form.get("email") or "").strip().lower()
+        password = request.form.get("password") or ""
         if not EMAIL_RE.match(email):
             flash("Enter a valid email address.")
-            return render_template_string(
-                AUTH_PAGE, user=None, title="Create an account",
-                sub="Start with 5 free searches. No credit card required.",
-                cta="Sign up free",
-                switch_text='Already have an account? <a href="/login">Log in</a>',
-            )
-        existing = db.get_user_by_email(email)
-        if existing:
-            session["user_id"] = existing["id"]
-            flash("Welcome back — you already had an account, so we logged you in.")
+        elif len(password) < 8:
+            flash("Password must be at least 8 characters.")
+        elif db.get_user_by_email(email):
+            flash("That email is already registered. Try logging in.")
         else:
-            user_id = db.create_user(email)
+            user_id = db.create_user(email, hash_password(password))
             session["user_id"] = user_id
-        return redirect(url_for("dashboard"))
+            return redirect(url_for("dashboard"))
     return render_template_string(
         AUTH_PAGE, user=None, title="Create an account",
         sub="Start with 5 free searches. No credit card required.",
-        cta="Sign up free",
+        cta="Sign up free", show_password=True,
         switch_text='Already have an account? <a href="/login">Log in</a>',
     )
 
@@ -3104,19 +3160,34 @@ def signup_page():
 def login_page():
     if request.method == "POST":
         email = (request.form.get("email") or "").strip().lower()
-        if not EMAIL_RE.match(email):
-            flash("Enter a valid email address.")
-        else:
-            user = db.get_or_create_user(email)
+        password = request.form.get("password") or ""
+        user = db.get_user_by_email(email) if EMAIL_RE.match(email) else None
+        if user and verify_password(password, user.get("password_hash", "")):
             session["user_id"] = user["id"]
             nxt = request.args.get("next") or url_for("dashboard")
             return redirect(nxt)
+        flash("Invalid email or password.")
     return render_template_string(
         AUTH_PAGE, user=None, title="Log in",
-        sub="Enter your email — we'll get you back to your dashboard.",
-        cta="Log in",
+        sub="Welcome back — sign in to your dashboard.",
+        cta="Log in", show_password=True,
         switch_text='New here? <a href="/signup">Sign up free</a>',
     )
+
+
+@app.route("/account/delete", methods=["POST"])
+@require_login
+def delete_account():
+    """GDPR-style account deletion. Removes user + all their data."""
+    uid = session["user_id"]
+    confirm = request.form.get("confirm", "").strip().lower()
+    if confirm != "delete my account":
+        flash("Type 'delete my account' exactly to confirm.")
+        return redirect(url_for("settings_page"))
+    db.delete_user(uid)
+    session.clear()
+    flash("Your account and all data have been deleted.")
+    return redirect(url_for("landing"))
 
 
 @app.route("/logout")
@@ -3196,9 +3267,149 @@ def checkout_confirm():
     if not plan:
         flash("Invalid plan.")
         return redirect(url_for("pricing"))
-    # >>> Stripe goes here. For now, manually credit the account.
-    db.add_credits(session["user_id"], plan["credits"])
+    user = current_user()
+
+    # Real Stripe path — used in production once STRIPE_SECRET_KEY is set
+    if stripe and STRIPE_SECRET_KEY:
+        try:
+            sess = stripe.checkout.Session.create(
+                mode="payment",
+                payment_method_types=["card"],
+                line_items=[{
+                    "price_data": {
+                        "currency": "usd",
+                        "product_data": {
+                            "name": f"{plan['name']} pack — {plan['credits']} ShopifySift searches",
+                            "description": plan.get("tagline", ""),
+                        },
+                        "unit_amount": int(plan["price"]) * 100,
+                    },
+                    "quantity": 1,
+                }],
+                success_url=url_for("checkout_success", plan=plan_id, _external=True)
+                            + "&session_id={CHECKOUT_SESSION_ID}",
+                cancel_url=url_for("pricing", _external=True),
+                customer_email=user["email"],
+                metadata={
+                    "user_id": str(user["id"]),
+                    "plan": plan_id,
+                    "credits": str(plan["credits"]),
+                },
+            )
+            return redirect(sess.url, code=303)
+        except Exception as e:
+            flash(f"Stripe error: {type(e).__name__}: {e}")
+            return redirect(url_for("pricing"))
+
+    # Test mode (no Stripe key) — credit the account directly
+    db.add_credits(user["id"], plan["credits"])
     return redirect(url_for("checkout_success", plan=plan_id))
+
+
+@app.route("/stripe/webhook", methods=["POST"])
+def stripe_webhook():
+    """Stripe -> us. Verify signature and credit on checkout.session.completed."""
+    if not (stripe and STRIPE_WEBHOOK_SECRET):
+        return ("Stripe not configured", 503)
+    payload = request.data
+    sig = request.headers.get("Stripe-Signature", "")
+    try:
+        event = stripe.Webhook.construct_event(payload, sig, STRIPE_WEBHOOK_SECRET)
+    except Exception as e:
+        return (f"Bad signature: {e}", 400)
+
+    if event["type"] == "checkout.session.completed":
+        sess = event["data"]["object"]
+        meta = sess.get("metadata") or {}
+        try:
+            user_id = int(meta.get("user_id"))
+            credits = int(meta.get("credits"))
+        except (TypeError, ValueError):
+            return ("Bad metadata", 400)
+        db.add_credits(user_id, credits)
+        return ("OK", 200)
+
+    return ("ignored", 200)
+
+
+LEGAL_PAGE = r"""<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ title }} · ShopifySift</title>
+""" + SHARED_STYLE + r"""
+<style>
+  .legal { max-width: 760px; margin: 4rem auto 6rem; padding: 0 1.5rem; }
+  .legal h1 { font-size: clamp(28px, 4vw, 40px); margin: 0 0 .5rem; letter-spacing: -.025em; line-height: 1.1; font-weight: 600; }
+  .legal p.meta { color: var(--text2); font-size: 13px; margin: 0 0 2.5rem; }
+  .legal h2 { font-size: 18px; margin: 2rem 0 .65rem; font-weight: 600; }
+  .legal p { color: var(--text2); font-size: 14.5px; line-height: 1.65; margin: 0 0 1rem; }
+  .legal a { color: var(--accent); }
+  .legal .stub-banner {
+    background: rgba(251,146,60,.08); border: 1px solid rgba(251,146,60,.2);
+    border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 2rem; color: #ffd0a8; font-size: 13px;
+  }
+</style>
+</head>
+<body>
+""" + NAV + r"""
+<div class="legal">
+  <h1>{{ title }}</h1>
+  <p class="meta">Last updated: {{ updated }}</p>
+  <div class="stub-banner">
+    <strong>Placeholder.</strong> Replace this with a real legal document before taking payments. We recommend <a href="https://termly.io" target="_blank">Termly.io</a> ($10/mo) or <a href="https://termsfeed.com" target="_blank">TermsFeed</a> for a generated GDPR/CCPA-compliant version.
+  </div>
+  {{ body|safe }}
+</div>
+</body>
+</html>
+"""
+
+TERMS_BODY = r"""
+<h2>1. Acceptance of terms</h2>
+<p>By creating an account you agree to these terms.</p>
+<h2>2. Service</h2>
+<p>ShopifySift queries public search-engine indexes for X (Twitter) profiles whose bios contain Shopify store URLs. We verify each store is live before returning it. We do not scrape X directly.</p>
+<h2>3. Acceptable use</h2>
+<p>You agree not to use ShopifySift for spam, harassment, or any unlawful purpose. Cold outreach must comply with X's user-facing rules and applicable email/SMS laws (CAN-SPAM, GDPR, etc.).</p>
+<h2>4. Credits and payment</h2>
+<p>Credits are purchased in packs and never expire. Refunds are at our discretion within 14 days of purchase, for unused credits.</p>
+<h2>5. Termination</h2>
+<p>You may delete your account at any time from <a href="/app/settings">Settings</a>. We may terminate accounts that violate these terms.</p>
+<h2>6. Liability</h2>
+<p>ShopifySift is provided "as is". We're not responsible for outcomes of your outreach.</p>
+<h2>7. Contact</h2>
+<p>Questions: <a href="mailto:hi@shopifysift.app">hi@shopifysift.app</a></p>
+"""
+
+PRIVACY_BODY = r"""
+<h2>1. What we collect</h2>
+<p>Email address (for login), search history (keywords + counts), and Stripe customer ID if you purchase credits. We log basic request metadata (IP, user-agent, timestamps) for security.</p>
+<h2>2. What we don't collect</h2>
+<p>We do not store the X handles, bios, or Shopify URLs that searches return — those are streamed to you and saved per-search to your dashboard for your own reference. They never leave your account.</p>
+<h2>3. Third-party services</h2>
+<p>Stripe (payments), Resend (email), DataImpulse (proxy), DuckDuckGo + Brave (search APIs). Each has their own privacy policy.</p>
+<h2>4. Your rights</h2>
+<p>EU/CA users: you can export, correct, or delete your data anytime from <a href="/app/settings">Settings</a>. Account deletion is permanent and immediate.</p>
+<h2>5. Cookies</h2>
+<p>One session cookie for login. No tracking cookies.</p>
+<h2>6. Contact</h2>
+<p>Privacy questions: <a href="mailto:hi@shopifysift.app">hi@shopifysift.app</a></p>
+"""
+
+
+@app.route("/terms")
+def terms_page():
+    return render_template_string(LEGAL_PAGE, user=current_user(),
+                                  title="Terms of Service",
+                                  updated="2026-05-09", body=TERMS_BODY)
+
+
+@app.route("/privacy")
+def privacy_page():
+    return render_template_string(LEGAL_PAGE, user=current_user(),
+                                  title="Privacy Policy",
+                                  updated="2026-05-09", body=PRIVACY_BODY)
 
 
 @app.route("/checkout/success")

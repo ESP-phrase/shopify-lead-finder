@@ -78,8 +78,7 @@ def init_db() -> None:
             conn.execute("ALTER TABLE searches ADD COLUMN finished_at TEXT")
 
 
-def create_user(email: str, password_hash: str = "") -> int:
-    """Create a user. password_hash defaults to '' for fake auth."""
+def create_user(email: str, password_hash: str) -> int:
     with get_db() as conn:
         cur = conn.execute(
             "INSERT INTO users (email, password_hash) VALUES (?, ?)",
@@ -88,13 +87,20 @@ def create_user(email: str, password_hash: str = "") -> int:
         return cur.lastrowid
 
 
-def get_or_create_user(email: str) -> dict:
-    """Fake-auth helper: find by email or create with 5 free credits."""
-    existing = get_user_by_email(email)
-    if existing:
-        return existing
-    user_id = create_user(email)
-    return get_user(user_id)
+def update_password(user_id: int, password_hash: str) -> None:
+    with get_db() as conn:
+        conn.execute(
+            "UPDATE users SET password_hash = ? WHERE id = ?",
+            (password_hash, user_id),
+        )
+
+
+def delete_user(user_id: int) -> None:
+    """GDPR-style account deletion: removes user + all associated data."""
+    with get_db() as conn:
+        conn.execute("DELETE FROM search_leads WHERE user_id = ?", (user_id,))
+        conn.execute("DELETE FROM searches WHERE user_id = ?", (user_id,))
+        conn.execute("DELETE FROM users WHERE id = ?", (user_id,))
 
 
 def get_user_by_email(email: str) -> dict | None:

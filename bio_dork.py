@@ -67,7 +67,15 @@ def _load_proxy_pool() -> list[str]:
 
 
 import random as _random
-PROXY_POOL = _load_proxy_pool()
+_full_pool = _load_proxy_pool()
+try:
+    _pool_size = int(os.environ.get("PROXY_POOL_SIZE", "0"))
+except ValueError:
+    _pool_size = 0
+if _pool_size > 0 and len(_full_pool) > _pool_size:
+    PROXY_POOL = _random.sample(_full_pool, _pool_size)
+else:
+    PROXY_POOL = _full_pool
 
 
 def get_random_proxy() -> str | None:
