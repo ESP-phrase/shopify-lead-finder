@@ -10,11 +10,13 @@ from pathlib import Path
 from flask import Flask, Response, render_template_string, request
 
 from scraper import check
-from x_scraper import detect_all, search_profiles, ACCOUNTS_FILE
 from bio_dork import (
     dork_queries, search_dorks, verify_all, PROXY_URL,
     BRAVE_API_KEY, GOOGLE_API_KEY, GOOGLE_CSE_ID,
 )
+
+# x_scraper pulls heavy deps (twscrape) — lazy-import inside the /x route
+ACCOUNTS_FILE = "accounts.txt"
 
 app = Flask(__name__)
 
@@ -701,6 +703,7 @@ def x_search():
             x_error = "Add accounts.txt before running an X search."
         elif keywords:
             try:
+                from x_scraper import detect_all, search_profiles  # lazy
                 profiles = asyncio.run(search_profiles(keywords, per_keyword))
                 rows = detect_all(profiles, workers=64)
                 rows.sort(key=lambda r: (not r["shopify"], -r.get("followers", 0)))
