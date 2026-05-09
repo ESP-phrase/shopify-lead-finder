@@ -1,4 +1,4 @@
-"""XSift — Shopify-store-in-X-bio finder for cold outreach."""
+"""ShopifySift — Shopify-store-in-X-bio finder for cold outreach."""
 
 import asyncio
 import csv
@@ -166,7 +166,7 @@ NAV = r"""
         <path d="M24 8 L8 24" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/>
         <circle cx="16" cy="16" r="3.4" fill="#ff7a3c"/>
       </svg>
-      XSift
+      ShopifySift
     </a>
     <div class="nav-r">
       {% if user %}
@@ -190,8 +190,8 @@ LANDING_PAGE = r"""<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>XSift · Sift X bios for active Shopify stores</title>
-<meta name="description" content="XSift finds active Shopify stores hidden in X (Twitter) bios. Verified handles ready for cold DM outreach.">
+<title>ShopifySift · Sift X bios for active Shopify stores</title>
+<meta name="description" content="ShopifySift finds active Shopify stores hidden in X (Twitter) bios. Verified handles ready for cold DM outreach.">
 <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -586,7 +586,7 @@ LANDING_PAGE = r"""<!doctype html>
         <path d="M24 8 L8 24" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/>
         <circle cx="16" cy="16" r="3.4" fill="#f97316"/>
       </svg>
-      XSift
+      ShopifySift
     </a>
     <div class="nav-r">
       <a href="#features">Features</a>
@@ -608,7 +608,7 @@ LANDING_PAGE = r"""<!doctype html>
       <div>
         <div class="eyebrow" style="color: var(--accent); font-weight: 600;">// Cold-DM lead source for Shopify operators</div>
         <h1>Real Shopify operators.<br>Hiding in <span class="underline">X bios</span>.</h1>
-        <p class="lede" style="font-size: 17px; max-width: 480px;">Apollo doesn't have these handles. Clay doesn't either. They're founders posting their store URL in their X bio — XSift sifts them out by niche, in about 12 seconds.</p>
+        <p class="lede" style="font-size: 17px; max-width: 480px;">Apollo doesn't have these handles. Clay doesn't either. They're founders posting their store URL in their X bio — ShopifySift sifts them out by niche, in about 12 seconds.</p>
         <div class="cta">
           <a href="/signup" class="btn btn-dark btn-lg">Start free →</a>
           <a href="#how" class="btn btn-ghost btn-lg">See how it works</a>
@@ -619,7 +619,7 @@ LANDING_PAGE = r"""<!doctype html>
       <div class="mockup">
       <div class="mockup-bar">
         <div class="dots"><span></span><span></span><span></span></div>
-        <div class="url-strip">xsift.app/dashboard</div>
+        <div class="url-strip">shopifysift.app/dashboard</div>
       </div>
       <div class="mockup-body">
         <div class="topline">
@@ -770,7 +770,7 @@ LANDING_PAGE = r"""<!doctype html>
       <div class="quote-card">
         <div class="verified-tag">★ Verified Operator</div>
         <div class="stars">★★★★★</div>
-        <p class="q">"Used to spend 4 hours scraping LinkedIn for ecom founders. XSift pulls 80 in 5 minutes and they're all on X — better DM channel anyway."</p>
+        <p class="q">"Used to spend 4 hours scraping LinkedIn for ecom founders. ShopifySift pulls 80 in 5 minutes and they're all on X — better DM channel anyway."</p>
         <div class="who">
           <div class="avi">S</div>
           <div><div class="nm">Sara L.</div><div class="ttl">Klaviyo consultant</div></div>
@@ -793,7 +793,7 @@ LANDING_PAGE = r"""<!doctype html>
   <div class="container">
     <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 4rem; align-items: center;">
       <div>
-        <div class="eyebrow">// About XSift</div>
+        <div class="eyebrow">// About ShopifySift</div>
         <h2 style="font-size: clamp(28px, 4vw, 42px); margin: .5rem 0 1.25rem; line-height: 1.1; font-weight: 600;">We sift X bios so you don't waste a single DM.</h2>
         <p class="text2" style="font-size: 16px; line-height: 1.6; margin-bottom: 1rem;">Apollo and ZoomInfo gave you 50,000 names. Half bounced, the rest blocked. We sift X bios for active Shopify operators who literally invited you to ask about their store.</p>
         <p class="text2" style="font-size: 16px; line-height: 1.6;">Every handle returned has been verified live: real Shopify HTML signatures, real product catalog, updated within the year. No dev stores. No abandoned drops. No ghosts.</p>
@@ -854,7 +854,7 @@ LANDING_PAGE = r"""<!doctype html>
           <li>Bulk CSV export</li>
           <li>Priority support</li>
         </ul>
-        <a href="mailto:hi@xsift.app" class="btn btn-dark btn-lg" style="width: 100%; justify-content: center;">Email for early access</a>
+        <a href="mailto:hi@shopifysift.app" class="btn btn-dark btn-lg" style="width: 100%; justify-content: center;">Email for early access</a>
       </div>
     </div>
   </div>
@@ -936,7 +936,7 @@ LANDING_PAGE = r"""<!doctype html>
             <path d="M24 8 L8 24" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/>
             <circle cx="16" cy="16" r="3.4" fill="#f97316"/>
           </svg>
-          XSift
+          ShopifySift
         </div>
         <p style="font-size: 13px; color: var(--text2); max-width: 260px; line-height: 1.55;">
           Active Shopify stores hiding in X bios. Built for operators doing cold outreach.
@@ -954,7 +954,7 @@ LANDING_PAGE = r"""<!doctype html>
       <div>
         <h5>Company</h5>
         <ul>
-          <li><a href="mailto:hi@xsift.app">Contact</a></li>
+          <li><a href="mailto:hi@shopifysift.app">Contact</a></li>
           <li><a href="#faq">FAQ</a></li>
         </ul>
       </div>
@@ -967,7 +967,7 @@ LANDING_PAGE = r"""<!doctype html>
       </div>
     </div>
     <div class="f-bottom">
-      <span>© 2026 XSift. All rights reserved.</span>
+      <span>© 2026 ShopifySift. All rights reserved.</span>
       <span>Made for operators, not list-makers.</span>
     </div>
   </div>
@@ -981,7 +981,7 @@ AUTH_PAGE = r"""<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{{ title }} · XSift</title>
+<title>{{ title }} · ShopifySift</title>
 """ + SHARED_STYLE + r"""
 <style>
   .auth-wrap { max-width: 440px; margin: 5rem auto; padding: 0 1.5rem; }
@@ -1055,114 +1055,465 @@ DASHBOARD_PAGE = r"""<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Dashboard · XSift</title>
-""" + SHARED_STYLE + r"""
+<title>Dashboard · ShopifySift</title>
+<link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
 <style>
-  .wrap { max-width: 1080px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
+  :root {
+    --bg: #0b0b0d;
+    --bg-card: #131316;
+    --sidebar: #0e0e11;
+    --text: #fafafa;
+    --text2: #a3a3a3;
+    --muted: #6b6b70;
+    --line: rgba(255,255,255,.06);
+    --line-strong: rgba(255,255,255,.12);
+    --accent: #ff7a3c;
+    --accent-soft: rgba(255,122,60,.14);
+    --orange: #ff7a3c;
+    --blue: #38bdf8;
+    --pink: #ec4899;
+    --purple: #a78bfa;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: 'Geist', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    background: var(--bg); color: var(--text);
+    font-size: 14px; line-height: 1.55; -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+
+  .layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+
+  /* SIDEBAR */
+  aside.sidebar {
+    background: var(--sidebar); border-right: 1px solid var(--line);
+    display: flex; flex-direction: column; padding: 1.5rem 1rem 1rem;
+  }
+  .side-brand {
+    display: flex; align-items: center; gap: .55rem;
+    padding: .25rem .75rem 1.5rem;
+  }
+  .side-brand .x-mark {
+    width: 28px; height: 28px; position: relative;
+  }
+  .side-brand .x-mark svg {
+    width: 100%; height: 100%; color: var(--accent);
+  }
+  .side-brand .name { font-size: 16px; font-weight: 600; letter-spacing: -.01em; }
+
+  .side-nav { display: flex; flex-direction: column; gap: .15rem; }
+  .side-nav a {
+    display: flex; align-items: center; gap: .75rem;
+    padding: .65rem .85rem; border-radius: 8px;
+    color: var(--text2); font-size: 14px; font-weight: 500;
+    transition: all .12s; position: relative;
+  }
+  .side-nav a:hover { background: rgba(255,255,255,.04); color: var(--text); }
+  .side-nav a.active {
+    background: var(--accent-soft); color: var(--accent);
+  }
+  .side-nav a.active::before {
+    content: ''; position: absolute; left: -1rem; top: 8px; bottom: 8px;
+    width: 3px; background: var(--accent); border-radius: 0 2px 2px 0;
+  }
+  .side-nav a svg { width: 18px; height: 18px; opacity: .9; flex-shrink: 0; }
+
+  .side-spacer { flex: 1; min-height: 1.5rem; }
+
+  .credit-widget {
+    background: linear-gradient(180deg, rgba(255,122,60,.06), transparent),
+                var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 12px; padding: 1.1rem 1.15rem;
+    margin-bottom: .65rem;
+  }
+  .credit-widget .top {
+    display: flex; align-items: center; gap: .65rem; margin-bottom: .15rem;
+  }
+  .credit-widget .num {
+    font-size: 32px; font-weight: 700; letter-spacing: -.025em;
+    color: var(--accent); line-height: 1;
+  }
+  .credit-widget .bolt { color: var(--accent); opacity: .85; }
+  .credit-widget .lbl { font-size: 12.5px; color: var(--text2); margin-bottom: .65rem; }
+  .credit-widget .progress {
+    height: 4px; background: rgba(255,255,255,.08); border-radius: 2px; overflow: hidden;
+    margin-bottom: 1rem;
+  }
+  .credit-widget .progress > span {
+    display: block; height: 100%; background: var(--accent); border-radius: 2px;
+    transition: width .3s;
+  }
+  .credit-widget .ctxt { padding-top: .55rem; border-top: 1px solid var(--line); }
+  .credit-widget .ctxt .head { font-size: 12.5px; font-weight: 600; margin-bottom: .25rem; }
+  .credit-widget .ctxt .sub { font-size: 12px; color: var(--text2); margin-bottom: .85rem; line-height: 1.45; }
+  .credit-widget a.upgrade {
+    display: block; text-align: center; padding: .55rem; font-size: 12.5px; font-weight: 600;
+    background: var(--accent); color: #fff; border-radius: 7px; transition: all .12s;
+  }
+  .credit-widget a.upgrade:hover { background: #ff8b4f; }
+
+  .side-logout {
+    display: flex; align-items: center; gap: .75rem;
+    padding: .65rem .85rem; border-radius: 8px;
+    color: var(--text2); font-size: 14px; font-weight: 500;
+    border-top: 1px solid var(--line); margin-top: .25rem; padding-top: 1rem;
+    transition: all .12s;
+  }
+  .side-logout:hover { color: var(--text); }
+  .side-logout svg { width: 18px; height: 18px; opacity: .9; }
+
+  /* MAIN */
+  main.main { padding: 1.25rem 2rem 4rem; min-width: 0; position: relative; }
+
+  /* sunset glow background */
+  main.main::before {
+    content: ''; position: absolute; right: 0; top: 0;
+    width: 600px; height: 500px; pointer-events: none;
+    background:
+      radial-gradient(ellipse 400px 200px at 90% 30%, rgba(255,122,60,.18), transparent 60%),
+      radial-gradient(circle 200px at 88% 28%, rgba(255,122,60,.1), transparent 70%);
+    z-index: 0;
+  }
+  main.main > * { position: relative; z-index: 1; }
+
+  /* TOP BAR */
+  header.topbar {
+    display: flex; align-items: center; gap: 1rem; margin-bottom: 3rem;
+  }
+  .topbar .search {
+    flex: 1; position: relative; max-width: 480px;
+  }
+  .topbar .search input {
+    width: 100%; background: rgba(255,255,255,.04);
+    border: 1px solid var(--line); border-radius: 10px;
+    padding: .65rem 2.6rem .65rem 2.6rem; font: inherit; font-size: 13.5px;
+    color: var(--text);
+  }
+  .topbar .search input::placeholder { color: var(--muted); }
+  .topbar .search input:focus { outline: none; border-color: var(--line-strong); }
+  .topbar .search .ico-l {
+    position: absolute; left: .85rem; top: 50%; transform: translateY(-50%);
+    color: var(--muted);
+  }
+  .topbar .search kbd {
+    position: absolute; right: .55rem; top: 50%; transform: translateY(-50%);
+    background: rgba(255,255,255,.06); color: var(--text2);
+    padding: .15rem .4rem; border-radius: 4px; font-family: 'Geist Mono', monospace;
+    font-size: 10.5px; font-weight: 500;
+  }
+  .topbar .pricing-link {
+    color: var(--text2); font-size: 14px; font-weight: 500;
+    padding: .5rem .9rem;
+  }
+  .topbar .pricing-link:hover { color: var(--text); }
+  .topbar .credit-pill {
+    background: var(--accent-soft); color: var(--accent);
+    border: 1px solid rgba(255,122,60,.22); padding: .5rem .95rem;
+    border-radius: 999px; font-size: 13px; font-weight: 600;
+    font-family: 'Geist Mono', monospace;
+  }
+  .topbar .user-chip {
+    display: flex; align-items: center; gap: .45rem;
+    background: var(--bg-card); border: 1px solid var(--line);
+    border-radius: 999px; padding: .25rem .55rem .25rem .25rem;
+    cursor: pointer; transition: all .12s; position: relative;
+  }
+  .topbar .user-chip:hover { border-color: var(--line-strong); }
+  .topbar .user-chip .avi {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: linear-gradient(135deg, #ff7a3c, #fbbf24);
+    color: #0a0a0a; display: grid; place-items: center;
+    font-weight: 700; font-size: 12.5px; letter-spacing: -.01em;
+  }
+  .topbar .user-chip .chev { color: var(--text2); }
+  /* Dropdown menu */
+  .topbar .user-chip .menu {
+    position: absolute; top: calc(100% + .5rem); right: 0;
+    background: var(--bg-card); border: 1px solid var(--line);
+    border-radius: 10px; padding: .35rem;
+    min-width: 180px; display: none; z-index: 50;
+    box-shadow: 0 12px 40px rgba(0,0,0,.5);
+  }
+  .topbar .user-chip:hover .menu { display: block; }
+  .topbar .user-chip .menu a {
+    display: block; padding: .55rem .75rem; border-radius: 7px;
+    font-size: 13.5px; color: var(--text2); transition: all .12s;
+  }
+  .topbar .user-chip .menu a:hover { background: rgba(255,255,255,.05); color: var(--text); }
+
+  /* PAGE TITLE */
   .page-eyebrow {
     font-family: 'Geist Mono', monospace; font-size: 12px;
-    color: var(--accent); text-transform: uppercase; letter-spacing: .08em;
-    margin-bottom: .65rem; font-weight: 600;
+    color: var(--accent); text-transform: uppercase; letter-spacing: .12em;
+    font-weight: 600; margin-bottom: 1rem;
   }
-  h1.page-title {
-    font-size: clamp(28px, 4vw, 36px); letter-spacing: -.025em;
-    margin: 0 0 .25rem; line-height: 1.1; font-weight: 600;
+  .page-title {
+    font-size: clamp(40px, 5vw, 56px); font-weight: 600;
+    letter-spacing: -.025em; line-height: 1; margin: 0 0 .85rem;
   }
-  p.greeting { color: var(--text2); margin: 0 0 2rem; font-size: 14.5px; }
-  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2.5rem; }
-  .stat {
-    background: var(--bg-card); border: 1px solid var(--line); border-radius: 12px; padding: 1.25rem 1.4rem;
+  .page-meta { color: var(--text2); font-size: 14px; margin: 0 0 3rem; }
+
+  /* STAT CARDS */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
+  @media (max-width: 1100px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+  .stat-card {
+    background: var(--bg-card); border: 1px solid var(--line);
+    border-radius: 14px; padding: 1.6rem 1.6rem 1.4rem;
+    transition: border-color .12s;
   }
-  .stat .icon { font-size: 18px; margin-bottom: .55rem; }
-  .stat .num { font-size: 30px; font-weight: 700; letter-spacing: -.025em; line-height: 1; }
-  .stat.hero-stat .num { color: var(--accent); }
-  .stat .lbl {
-    font-family: 'Geist Mono', monospace; font-size: 11px; color: var(--text2);
-    text-transform: uppercase; letter-spacing: .06em; margin-top: .5rem; font-weight: 500;
+  .stat-card:hover { border-color: var(--line-strong); }
+  .stat-card.featured { border-color: rgba(255,122,60,.4); background: linear-gradient(180deg, rgba(255,122,60,.06), transparent 70%), var(--bg-card); }
+  .stat-card .ico {
+    width: 44px; height: 44px; border-radius: 50%;
+    display: grid; place-items: center; margin-bottom: 1.5rem;
   }
-  .actions { display: flex; gap: .75rem; margin-bottom: 2.5rem; }
-  .actions .btn-primary, .actions .btn-ghost { padding: .8rem 1.5rem; font-size: 14px; }
-  table.history {
-    width: 100%; background: var(--bg-card); border: 1px solid var(--line); border-radius: 12px;
-    border-collapse: separate; border-spacing: 0; overflow: hidden; font-size: 13.5px;
+  .stat-card.c-orange .ico { background: var(--accent-soft); color: var(--accent); }
+  .stat-card.c-blue   .ico { background: rgba(56,189,248,.14); color: var(--blue); }
+  .stat-card.c-pink   .ico { background: rgba(236,72,153,.14); color: var(--pink); }
+  .stat-card.c-purple .ico { background: rgba(167,139,250,.14); color: var(--purple); }
+  .stat-card .num { font-size: 56px; font-weight: 700; letter-spacing: -.03em; line-height: 1; }
+  .stat-card.c-orange .num { color: var(--accent); }
+  .stat-card .lbl {
+    font-family: 'Geist Mono', monospace; font-size: 12px;
+    color: var(--text2); text-transform: uppercase; letter-spacing: .12em;
+    font-weight: 500; margin-top: 1rem;
   }
-  table.history th, table.history td { padding: .85rem 1.1rem; text-align: left; }
-  table.history th {
+
+  /* ACTION BUTTONS ROW */
+  .actions { display: flex; gap: .65rem; flex-wrap: wrap; margin-bottom: 3rem; }
+  .actions a {
+    padding: .8rem 1.4rem; border-radius: 9px; font-size: 14px; font-weight: 600;
+    display: inline-flex; align-items: center; gap: .4rem; transition: all .12s;
+  }
+  .actions .btn-primary { background: var(--accent); color: #fff; }
+  .actions .btn-primary:hover { background: #ff8b4f; transform: translateY(-1px); }
+  .actions .btn-ghost {
+    background: var(--bg-card); border: 1px solid var(--line); color: var(--text);
+  }
+  .actions .btn-ghost:hover { border-color: var(--line-strong); }
+
+  /* SEARCH HISTORY SECTION */
+  .history-section .head {
+    font-family: 'Geist Mono', monospace; font-size: 12px;
+    color: var(--accent); text-transform: uppercase; letter-spacing: .12em;
+    font-weight: 600; margin-bottom: 1rem;
+  }
+  .history-empty {
+    background: var(--bg-card); border: 1px dashed var(--line-strong);
+    border-radius: 14px; padding: 4rem 2rem; text-align: center;
+  }
+  .history-empty .ico {
+    width: 48px; height: 48px; margin: 0 auto 1.25rem;
+    border-radius: 50%; background: rgba(255,255,255,.04);
+    display: grid; place-items: center; color: var(--text2);
+  }
+  .history-empty p {
+    font-size: 16px; color: var(--text); font-weight: 500;
+    margin: 0 0 .75rem;
+  }
+  .history-empty a.cta {
+    color: var(--accent); font-size: 14px; font-weight: 500;
+  }
+  .history-empty a.cta:hover { text-decoration: underline; }
+
+  /* HISTORY TABLE */
+  table.hist {
+    width: 100%; background: var(--bg-card); border: 1px solid var(--line);
+    border-radius: 12px; border-collapse: separate; border-spacing: 0;
+    overflow: hidden; font-size: 13.5px;
+  }
+  table.hist th, table.hist td { padding: .85rem 1.1rem; text-align: left; }
+  table.hist th {
     background: rgba(255,255,255,.02); color: var(--text2);
-    font-family: 'Geist Mono', monospace;
-    font-size: 11px; text-transform: uppercase; letter-spacing: .06em; font-weight: 600;
+    font-family: 'Geist Mono', monospace; font-size: 11px;
+    text-transform: uppercase; letter-spacing: .08em; font-weight: 600;
   }
-  table.history tr + tr td { border-top: 1px solid var(--line); }
-  table.history td.kw { color: var(--text); font-weight: 500; }
-  .empty-state {
-    background: var(--bg-card); border: 1px dashed var(--line-strong); border-radius: 12px;
-    color: var(--text2); padding: 3rem 2rem; text-align: center; font-size: 14px;
-  }
-  h2.section {
-    font-family: 'Geist Mono', monospace; font-size: 12px; text-transform: uppercase;
-    letter-spacing: .08em; color: var(--accent); margin: 0 0 1rem; font-weight: 600;
+  table.hist tr + tr td { border-top: 1px solid var(--line); }
+  table.hist td.kw { color: var(--text); font-weight: 500; }
+  table.hist td .num-active { color: #4ade80; font-weight: 600; }
+
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+    aside.sidebar { display: none; }
   }
 </style>
 </head>
 <body>
-""" + NAV + r"""
+
 {% with messages = get_flashed_messages() %}
-  {% for m in messages %}<div class="flash">{{ m }}</div>{% endfor %}
+  {% for m in messages %}<div style="background: rgba(248,113,113,.1); border: 1px solid rgba(248,113,113,.25); padding: .75rem 1rem; margin: 1rem; border-radius: 8px; color: #ffb1b1; font-size: 13px;">{{ m }}</div>{% endfor %}
 {% endwith %}
-<div class="wrap">
-  <div class="page-eyebrow">// Dashboard</div>
-  <h1 class="page-title">Welcome back.</h1>
-  <p class="greeting">{{ user.email }} · joined {{ user.created_at[:10] }}</p>
 
-  <div class="stats">
-    <div class="stat hero-stat">
-      <div class="icon">⚡</div>
-      <div class="num">{{ user.credits }}</div>
+<div class="layout">
+
+  <aside class="sidebar">
+    <a href="/" class="side-brand">
+      <span class="x-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </span>
+      <span class="name">ShopifySift</span>
+    </a>
+
+    <nav class="side-nav">
+      <a href="/dashboard" class="active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        Dashboard
+      </a>
+      <a href="/app/dork">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        Search
+      </a>
+      <a href="/app/dork">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Leads
+      </a>
+      <a href="/dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        History
+      </a>
+      <a href="/pricing">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        Credits
+      </a>
+      <a href="/pricing">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41 13.42 20.58a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+        Pricing
+      </a>
+      <a href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Settings
+      </a>
+    </nav>
+
+    <div class="side-spacer"></div>
+
+    <div class="credit-widget">
+      <div class="top">
+        <div class="num">{{ user.credits }}</div>
+        <span class="bolt">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </span>
+      </div>
       <div class="lbl">Credits remaining</div>
+      <div class="progress"><span style="width: {{ (user.credits|float / 100 * 100)|round|int if user.credits < 100 else 100 }}%"></span></div>
+      <div class="ctxt">
+        <div class="head">Need more credits?</div>
+        <div class="sub">Get more searches and unlock more leads.</div>
+        <a href="/pricing" class="upgrade">Upgrade now</a>
+      </div>
     </div>
-    <div class="stat">
-      <div class="icon" style="color:var(--accent)">🔍</div>
-      <div class="num">{{ stats.searches }}</div>
-      <div class="lbl">Searches run</div>
-    </div>
-    <div class="stat">
-      <div class="icon" style="color:var(--green)">🎯</div>
-      <div class="num">{{ stats.total_active }}</div>
-      <div class="lbl">Active leads found</div>
-    </div>
-    <div class="stat">
-      <div class="icon" style="color:var(--accent)">📊</div>
-      <div class="num">{{ stats.total_found }}</div>
-      <div class="lbl">Total candidates</div>
-    </div>
-  </div>
 
-  <div class="actions">
-    <a href="/app/dork" class="btn-primary">Run a search →</a>
-    <a href="/pricing" class="btn-ghost">Get more credits</a>
-    <a href="/" class="btn-ghost">Back to home</a>
-  </div>
+    <a href="/logout" class="side-logout">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Log out
+    </a>
+  </aside>
 
-  <h2 class="section">Search history</h2>
-  {% if history %}
-    <table class="history">
-      <thead><tr><th>When</th><th>Keywords</th><th>Engine</th><th>Active</th><th>Total</th></tr></thead>
-      <tbody>
-      {% for s in history %}
-        <tr>
-          <td style="color:var(--muted)">{{ s.created_at[:16] }}</td>
-          <td class="kw">{{ s.keywords or '(broad)' }}</td>
-          <td style="color:var(--muted)">{{ s.engine }}</td>
-          <td><strong style="color:var(--green)">{{ s.active_leads }}</strong></td>
-          <td>{{ s.leads_found }}</td>
-        </tr>
-      {% endfor %}
-      </tbody>
-    </table>
-  {% else %}
-    <div class="empty-state">No searches yet. <a href="/app/dork">Run your first one →</a></div>
-  {% endif %}
+  <main class="main">
+    <header class="topbar">
+      <div class="search">
+        <span class="ico-l">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        </span>
+        <input type="text" placeholder="Search..." />
+        <kbd>⌘K</kbd>
+      </div>
+      <a href="/pricing" class="pricing-link">Pricing</a>
+      <span class="credit-pill">{{ user.credits }} credits</span>
+      <div class="user-chip">
+        <div class="avi">{{ (user.email or 'U')[:2]|upper }}</div>
+        <span class="chev">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </span>
+        <div class="menu">
+          <a href="/dashboard">Dashboard</a>
+          <a href="/app/dork">Search</a>
+          <a href="/pricing">Get more credits</a>
+          <a href="/logout">Log out</a>
+        </div>
+      </div>
+    </header>
+
+    <div class="page-eyebrow">// Dashboard</div>
+    <h1 class="page-title">Welcome back.</h1>
+    <p class="page-meta">{{ user.email }} · joined {{ user.created_at[:10] }}</p>
+
+    <section class="stats">
+      <div class="stat-card c-orange featured">
+        <div class="ico">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <div class="num">{{ user.credits }}</div>
+        <div class="lbl">Credits Remaining</div>
+      </div>
+      <div class="stat-card c-blue">
+        <div class="ico">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/><circle cx="14" cy="8" r="1.5" fill="currentColor"/></svg>
+        </div>
+        <div class="num">{{ stats.searches }}</div>
+        <div class="lbl">Searches Run</div>
+      </div>
+      <div class="stat-card c-pink">
+        <div class="ico">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>
+        </div>
+        <div class="num">{{ stats.total_active }}</div>
+        <div class="lbl">Active Leads Found</div>
+      </div>
+      <div class="stat-card c-purple">
+        <div class="ico">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 3v18h18"/><rect x="7" y="13" width="3" height="6" fill="currentColor" stroke="none"/><rect x="12" y="9" width="3" height="10" fill="currentColor" stroke="none"/><rect x="17" y="5" width="3" height="14" fill="currentColor" stroke="none"/></svg>
+        </div>
+        <div class="num">{{ stats.total_found }}</div>
+        <div class="lbl">Total Candidates</div>
+      </div>
+    </section>
+
+    <div class="actions">
+      <a href="/app/dork" class="btn-primary">Run a search →</a>
+      <a href="/pricing" class="btn-ghost">Get more credits</a>
+      <a href="/" class="btn-ghost">Back to home</a>
+    </div>
+
+    <section class="history-section">
+      <div class="head">// Search History</div>
+      {% if history %}
+        <table class="hist">
+          <thead><tr><th>When</th><th>Keywords</th><th>Engine</th><th>Active</th><th>Total</th></tr></thead>
+          <tbody>
+          {% for s in history %}
+            <tr>
+              <td style="color:var(--muted)">{{ s.created_at[:16] }}</td>
+              <td class="kw">{{ s.keywords or '(broad)' }}</td>
+              <td style="color:var(--muted)">{{ s.engine }}</td>
+              <td><span class="num-active">{{ s.active_leads }}</span></td>
+              <td>{{ s.leads_found }}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <div class="history-empty">
+          <div class="ico">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          </div>
+          <p>No searches yet.</p>
+          <a class="cta" href="/app/dork">Run your first one →</a>
+        </div>
+      {% endif %}
+    </section>
+  </main>
 </div>
+
 </body>
 </html>
 """
@@ -1171,7 +1522,7 @@ PRICING_PAGE = r"""<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Pricing · XSift</title>
+<title>Pricing · ShopifySift</title>
 """ + SHARED_STYLE + r"""
 <style>
   .pricing-wrap { max-width: 1080px; margin: 4rem auto 5rem; padding: 0 1.5rem; }
@@ -1266,7 +1617,7 @@ PRICING_PAGE = r"""<!doctype html>
     {% endfor %}
   </div>
   <p class="pricing-meta">
-    Need something custom? Higher volume? <a href="mailto:hi@xsift.app">Email us</a> for enterprise pricing.
+    Need something custom? Higher volume? <a href="mailto:hi@shopifysift.app">Email us</a> for enterprise pricing.
   </p>
 </div>
 </body>
@@ -1277,7 +1628,7 @@ CHECKOUT_PAGE = r"""<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Checkout · XSift</title>
+<title>Checkout · ShopifySift</title>
 """ + SHARED_STYLE + r"""
 <style>
   .checkout-wrap { max-width: 980px; margin: 3rem auto 5rem; padding: 0 1.5rem; }
@@ -1455,7 +1806,7 @@ CHECKOUT_SUCCESS_PAGE = r"""<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Success · XSift</title>
+<title>Success · ShopifySift</title>
 """ + SHARED_STYLE + r"""
 <style>
   .success-wrap { max-width: 540px; margin: 6rem auto; padding: 0 1.5rem; text-align: center; }
@@ -1534,7 +1885,7 @@ PAGE = r"""<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>XSift · Sift X bios</title>
+<title>ShopifySift · Sift X bios</title>
 <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1904,7 +2255,7 @@ PAGE = r"""<!doctype html>
       <div class="brand">
         <div class="logo">L</div>
         <div>
-          <h1>XSift</h1>
+          <h1>ShopifySift</h1>
           <p>Sift X bios for active Shopify stores</p>
         </div>
       </div>
@@ -2195,9 +2546,9 @@ PAGE = r"""<!doctype html>
         const fd = new FormData(form);
         const data = Object.fromEntries(fd.entries());
         data.savedAt = new Date().toISOString();
-        const saved = JSON.parse(localStorage.getItem('xsift.savedSearches') || '[]');
+        const saved = JSON.parse(localStorage.getItem('shopifysift.savedSearches') || '[]');
         saved.unshift(data);
-        localStorage.setItem('xsift.savedSearches', JSON.stringify(saved.slice(0, 20)));
+        localStorage.setItem('shopifysift.savedSearches', JSON.stringify(saved.slice(0, 20)));
         const btn = $('#saveSearch');
         btn.textContent = '✓ Saved';
         setTimeout(() => btn.textContent = '★ Save', 1500);
