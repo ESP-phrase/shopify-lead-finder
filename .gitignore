@@ -3,10 +3,16 @@
 accounts.txt
 twscrape.db
 twscrape.db-*
+lead_finder.db
+lead_finder.db-*
 
 # Scraped output
 *.csv
 !sample_*.csv
+
+# Local debug artifacts
+google_dump.html
+*.dump.html
 
 # Python
 __pycache__/

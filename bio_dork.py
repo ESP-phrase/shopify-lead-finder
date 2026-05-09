@@ -39,8 +39,6 @@ def _load_env() -> None:
 _load_env()
 PROXY_URL = os.environ.get("PROXY_URL")
 BRAVE_API_KEY = os.environ.get("BRAVE_API_KEY")
-GOOGLE_API_KEY = os.environ.get("GOOGLE_API_KEY")
-GOOGLE_CSE_ID = os.environ.get("GOOGLE_CSE_ID")
 
 if PROXY_URL:
     SESSION.proxies = {"http": PROXY_URL, "https": PROXY_URL}
@@ -102,47 +100,72 @@ def _ddg_search(query: str, count: int, ddgs: DDGS) -> list[dict]:
 
 
 def _google_search(query: str, count: int) -> list[dict]:
-    """Google Custom Search API. Free 100 queries/day. 10 results per request."""
-    if not (GOOGLE_API_KEY and GOOGLE_CSE_ID):
-        raise RuntimeError("GOOGLE_API_KEY and GOOGLE_CSE_ID required in .env")
+    """Scrape Google search results directly through the residential proxy.
+
+    No API key required — uses DataImpulse (or whatever PROXY_URL is set to)
+    to dodge bot detection. Parses HTML SERP into row dicts that match the
+    DDGS shape: {href, title, body}.
+    """
+    from bs4 import BeautifulSoup
+
+    proxies = {"http": PROXY_URL, "https": PROXY_URL} if PROXY_URL else None
+    headers = {
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/120.0.0.0 Safari/537.36"
+        ),
+        "Accept-Language": "en-US,en;q=0.9",
+    }
+
     out: list[dict] = []
-    fetched = 0
-    start = 1  # Google uses 1-indexed `start` param
-    while fetched < count and start <= 91:  # CSE caps at 100 results total
-        n = min(10, count - fetched)
-        params = {
-            "key": GOOGLE_API_KEY, "cx": GOOGLE_CSE_ID,
-            "q": query, "num": n, "start": start, "safe": "off",
-        }
-        try:
-            r = requests.get(
-                "https://www.googleapis.com/customsearch/v1",
-                params=params, timeout=20,
-            )
-        except requests.RequestException as e:
-            raise RuntimeError(f"google http error: {e}") from None
-        if r.status_code == 429:
-            time.sleep(2)
-            return out
-        if r.status_code == 403:
-            # Quota exhausted or API not enabled
-            raise RuntimeError(f"google 403: {r.text[:120]}")
-        if not r.ok:
-            raise RuntimeError(f"google {r.status_code}: {r.text[:120]}")
-        data = r.json()
-        items = data.get("items") or []
-        if not items:
+    seen: set[str] = set()
+    n = min(20, max(10, count))  # Google ignores num > ~20-30 anyway
+
+    try:
+        r = requests.get(
+            "https://www.google.com/search",
+            params={"q": query, "num": n, "hl": "en", "gl": "us"},
+            headers=headers, proxies=proxies, timeout=25,
+        )
+    except requests.RequestException as e:
+        raise RuntimeError(f"google scrape http error: {e}") from None
+
+    if r.status_code == 429 or "captcha" in r.text.lower()[:2000]:
+        raise RuntimeError("google blocked us (CAPTCHA / 429) — try again or rotate proxy IP")
+    if not r.ok:
+        raise RuntimeError(f"google scrape {r.status_code}")
+
+    soup = BeautifulSoup(r.text, "html.parser")
+    # Google's SERP layout has changed many times; try several selectors.
+    for block in soup.select("div.MjjYud, div.tF2Cxc, div.g"):
+        a = block.find("a", href=True)
+        if not a:
+            continue
+        href = a["href"]
+        if not href.startswith("http"):
+            continue
+        # Strip Google redirect wrappers
+        if "/url?" in href and "url=" in href:
+            from urllib.parse import parse_qs, urlparse as _up
+            q = parse_qs(_up(href).query).get("url") or parse_qs(_up(href).query).get("q")
+            if q:
+                href = q[0]
+        if href in seen:
+            continue
+        seen.add(href)
+        h3 = block.find("h3")
+        title = (h3.get_text(strip=True) if h3 else "").strip()
+        # Snippet: the largest div that's not the title
+        snippet_el = block.select_one("div[data-sncf], div[role=text], span[role=text], span.aCOpRe, div.VwiC3b")
+        body = (snippet_el.get_text(" ", strip=True) if snippet_el else "").strip()
+        if not body:
+            # fallback: any text in the block minus title
+            text = block.get_text(" ", strip=True)
+            body = text.replace(title, "", 1).strip()
+        out.append({"href": href, "title": title, "body": body})
+        if len(out) >= count:
             break
-        for it in items:
-            out.append({
-                "href": it.get("link", ""),
-                "title": it.get("title", "") or "",
-                "body": it.get("snippet", "") or "",
-            })
-        fetched += len(items)
-        if len(items) < n:
-            break
-        start += n
     return out
 
 SHOPIFY_BIO_RE = re.compile(r"\b([a-z0-9][a-z0-9-]{1,59}\.myshopify\.com)\b", re.I)
@@ -176,24 +199,51 @@ SHOPIFY_ECOSYSTEM_TERMS = [
 # Suffixes mixed in to diversify queries — survive Brave's quote-stripping.
 DORK_SUFFIXES = ["", "store", "shop", "brand", "founder", "merch", "apparel"]
 
+# Keyword packs — preset niche/category lists for one-click broad runs.
+KEYWORD_PACKS: dict[str, list[str]] = {
+    "ecom_general": [
+        "ecommerce", "dtc", "online store", "my shop", "founder",
+        "shopify store", "brand", "merch", "apparel",
+    ],
+    "dropshipping": [
+        "dropshipping", "dropshipper", "dropship", "winning products",
+        "aliexpress", "cj dropshipping", "spocket",
+    ],
+    "niches": [
+        "skincare", "fitness", "coffee", "tea", "candles", "jewelry",
+        "art prints", "pet supplies", "home decor", "fashion", "sneakers",
+    ],
+    "creators_pod": [
+        "print on demand", "merch", "stickers", "enamel pin",
+        "artist", "illustrator", "designer", "creator",
+    ],
+}
+
+
+def expand_pack(name: str) -> list[str]:
+    return list(KEYWORD_PACKS.get(name, []))
+
 
 def dork_queries(keywords: list[str], broad: bool = False) -> list[str]:
-    """
-    Build the dork list. Diversified so each variant is unique even after
-    Brave strips quoted phrases. Without `broad`, every query pins
-    myshopify.com. With `broad`, also pulls in Shopify-ecosystem terms
-    that surface custom-domain stores.
-    """
+    """Build the dork list, deduped and minus nonsensical suffix combos."""
+    seen: set[str] = set()
     queries: list[str] = []
     targets = ["x.com", "twitter.com"]
 
     def add(t: str, body: str) -> None:
-        queries.append(f"site:{t} {body}")
+        q = f"site:{t} {body.strip()}"
+        if q not in seen:
+            seen.add(q)
+            queries.append(q)
+
+    def smart_suffixes(kw: str) -> list[str]:
+        kw_l = kw.lower()
+        return [s for s in DORK_SUFFIXES if not s or s not in kw_l]
 
     if not keywords:
         for t in targets:
             for suf in DORK_SUFFIXES:
-                add(t, f'"myshopify.com" {suf}'.strip())
+                add(t, f'"myshopify.com" {suf}')
             if broad:
                 for term in SHOPIFY_ECOSYSTEM_TERMS:
                     add(t, f'"{term}"')
@@ -201,15 +251,15 @@ def dork_queries(keywords: list[str], broad: bool = False) -> list[str]:
         return queries
 
     for kw in keywords:
+        sufs = smart_suffixes(kw)
         for t in targets:
-            for suf in DORK_SUFFIXES:
-                add(t, f'"myshopify.com" {kw} {suf}'.strip())
+            for suf in sufs:
+                add(t, f'"myshopify.com" {kw} {suf}')
             add(t, f'".myshopify.com" {kw}')
             add(t, f'{kw} myshopify.com')
             if broad:
                 for term in SHOPIFY_ECOSYSTEM_TERMS:
                     add(t, f'"{term}" {kw}')
-                    add(t, f'{term} {kw} store')
     return queries
 
 
@@ -256,15 +306,26 @@ def search_dorks(
     per_query: int,
     log: list[str] | None = None,
     engine: str = "ddg",
+    on_log=None,
+    on_candidate=None,
 ) -> dict[str, dict]:
     """Run each dork; dedupe by X username; return {username: row}.
 
-    engine: "ddg", "brave", or "both" (runs DDG and Brave per query, merges).
+    engine: "ddg", "brave", or "both"
+    on_log: optional callable(msg) for live streaming
+    on_candidate: optional callable(profile_dict) — fires once per new
+                  unique X profile discovered, before verification.
+                  Use to start verification in parallel with the search.
     """
     def emit(msg: str) -> None:
         print(msg, file=sys.stderr)
         if log is not None:
             log.append(msg)
+        if on_log is not None:
+            try:
+                on_log(msg)
+            except Exception:
+                pass
 
     by_user: dict[str, dict] = {}
 
@@ -274,8 +335,8 @@ def search_dorks(
     if use_brave and not BRAVE_API_KEY:
         emit("BRAVE_API_KEY missing — Brave disabled.")
         use_brave = False
-    if use_google and not (GOOGLE_API_KEY and GOOGLE_CSE_ID):
-        emit("GOOGLE_API_KEY/GOOGLE_CSE_ID missing — Google disabled.")
+    if use_google and not PROXY_URL:
+        emit("PROXY_URL missing — Google scraping needs a proxy to dodge CAPTCHAs. Disabled.")
         use_google = False
     if not (use_ddg or use_brave or use_google):
         emit("No engine usable; defaulting to DDG.")
@@ -302,12 +363,18 @@ def search_dorks(
             candidates = extract_candidate_urls(f"{title} {snippet}")
             if not candidates:
                 continue
-            by_user[username] = {
+            profile = {
                 "username": username,
                 "x_profile": f"https://x.com/{username}",
                 "bio_snippet": snippet,
                 "candidates": candidates,
             }
+            by_user[username] = profile
+            if on_candidate is not None:
+                try:
+                    on_candidate(profile)
+                except Exception:
+                    pass
         return len(by_user) - before
 
     try:
