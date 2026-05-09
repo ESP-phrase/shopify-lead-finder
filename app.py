@@ -188,391 +188,383 @@ NAV = r"""
 LANDING_PAGE = r"""<!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ShopifySift · Sift X bios for active Shopify stores</title>
-<meta name="description" content="ShopifySift finds active Shopify stores hidden in X (Twitter) bios. Verified handles ready for cold DM outreach.">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ShopifySift · Real Shopify operators hiding in X bios</title>
+<meta name="description" content="The #1 lead search tool for Shopify operators. Find founders posting their store, URL, or niche in their X bio — so you can reach out first.">
 <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
 <style>
   :root {
-    --bg: #16181c;                  /* warm charcoal — not pure black */
-    --bg-card: #1f2227;             /* card on dark */
-    --bg-cream: #f5d9c4;             /* peachy cream — alternating sections */
-    --bg-cream-alt: #fbe4d2;         /* lighter peach variant for cards */
-    --text: #f5f0eb;                 /* warm off-white on dark */
-    --text-dark: #1a1612;            /* on cream */
-    --text2: #a8a39e;                /* muted on dark — warm gray */
-    --text2-dark: #6b5648;           /* muted on cream */
-    --muted: #74706c;
+    --bg: #0b0b0d;
+    --bg-card: #131316;
+    --bg-card-hover: #18181c;
+    --text: #fafafa;
+    --text2: #a3a3a3;
+    --muted: #6b6b70;
     --line: rgba(255,255,255,.07);
-    --line-dark: rgba(26,22,18,.14); /* hairline on cream */
-    --accent: #ff7a3c;               /* vibrant warm orange */
-    --accent-hover: #ff8b4f;
-    --accent-soft: rgba(255,122,60,.16);
+    --line-strong: rgba(255,255,255,.14);
+    --accent: #ff7a3c;
+    --accent-soft: rgba(255,122,60,.14);
+    --accent-line: rgba(255,122,60,.28);
     --green: #4ade80;
-    --green-soft: rgba(74,222,128,.12);
     color-scheme: dark;
   }
-  /* Cream-section utility — swaps surface + text + lines */
-  .cream {
-    background: var(--bg-cream);
-    color: var(--text-dark);
-  }
-  .cream h1, .cream h2, .cream h3, .cream h4, .cream h5 { color: var(--text-dark); }
-  .cream .text2 { color: var(--text2-dark); }
-  .cream .eyebrow { color: var(--accent); }
-  .cream .feat-card,
-  .cream .quote-card,
-  .cream .price-card {
-    background: var(--bg-cream-alt);
-    border-color: var(--line-dark);
-    color: var(--text-dark);
-  }
-  .cream .feat-card h3, .cream .quote-card p.q,
-  .cream .price-card h3 { color: var(--text-dark); }
-  .cream .feat-card p, .cream .price-card .desc,
-  .cream .price-card li, .cream .who .nm { color: var(--text2-dark); }
-  .cream .who .nm { color: var(--text-dark); }
-  .cream .step-item { border-color: var(--line-dark); }
-  .cream .step-item h4 { color: var(--text-dark); }
-  .cream .step-item p { color: var(--text2-dark); }
-  .cream .steps { border-top-color: var(--line-dark); }
-  .cream .faq-item { border-color: var(--line-dark); }
-  .cream .faq-item summary { color: var(--text-dark); }
-  .cream .faq-item p { color: var(--text2-dark); }
-  .cream .btn.btn-ghost {
-    color: var(--text-dark); border-color: var(--line-dark);
-  }
-  .cream .btn.btn-ghost:hover { border-color: var(--text-dark); }
-  .cream .sec-h p { color: var(--text2-dark); }
-  .cream .stat-tile .num { color: var(--text-dark); }
-  .cream .stat-tile .lbl { color: var(--text2-dark); }
-  .cream .price-card .pp,
-  .cream .step-item .step-num { color: var(--accent); font-weight: 600; }
-  .cream .feat-icon { background: var(--accent); color: #fff; }
-  .cream .stat-tile .num { color: var(--accent); }
-  .cream .stars { color: var(--accent); }
-  .cream .verified-tag { background: var(--accent); color: #fff; }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
   body {
     font-family: 'Geist', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
     background: var(--bg); color: var(--text);
-    font-size: 15px; line-height: 1.55;
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
+    font-size: 15px; line-height: 1.55; -webkit-font-smoothing: antialiased;
   }
   .mono { font-family: 'Geist Mono', ui-monospace, monospace; }
   a { color: inherit; text-decoration: none; }
-  img { max-width: 100%; display: block; }
 
-  /* layout */
-  .container { max-width: 1120px; margin: 0 auto; padding: 0 1.5rem; }
+  .container { max-width: 1180px; margin: 0 auto; padding: 0 1.5rem; }
   section { padding: 5rem 0; }
-  section.tight { padding: 3rem 0; }
-  h1, h2, h3 { letter-spacing: -.022em; }
+
   .eyebrow {
-    font-family: 'Geist Mono', monospace; font-size: 12px;
-    color: var(--muted); text-transform: uppercase; letter-spacing: .08em;
-    margin-bottom: 1rem;
+    font-family: 'Geist Mono', monospace; font-size: 11.5px;
+    color: var(--accent); text-transform: uppercase; letter-spacing: .12em;
+    font-weight: 600; margin-bottom: 1.25rem;
   }
 
   /* nav */
-  nav.nav {
-    position: sticky; top: 0; z-index: 50;
-    background: rgba(10,10,10,.78); backdrop-filter: saturate(140%) blur(14px);
-    border-bottom: 1px solid var(--line);
-  }
-  nav .inner { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  nav.nav { padding: 1.5rem 0; }
+  nav .inner { display: flex; align-items: center; justify-content: space-between; }
   .brand-mark {
     display: inline-flex; align-items: center; gap: .55rem;
-    font-weight: 600; font-size: 15px; color: var(--text);
-    letter-spacing: -.01em;
+    font-weight: 600; font-size: 16px; letter-spacing: -.01em;
   }
-  .brand-mark svg { width: 22px; height: 22px; }
-  .brand-mark:hover { text-decoration: none; }
+  .brand-mark .x {
+    width: 26px; height: 26px; display: grid; place-items: center;
+    color: var(--accent);
+  }
+  .brand-mark .x svg { width: 100%; height: 100%; }
   .nav-r { display: flex; align-items: center; gap: 2rem; font-size: 14px; }
   .nav-r a { color: var(--text2); font-weight: 500; }
   .nav-r a:hover { color: var(--text); }
-  .btn {
-    display: inline-flex; align-items: center; gap: .4rem;
-    padding: .55rem 1rem; font: inherit; font-weight: 500;
-    border-radius: 6px; cursor: pointer; transition: all .12s ease;
+  .btn-orange {
+    background: var(--accent); color: #fff; padding: .55rem 1.1rem;
+    border-radius: 8px; font-weight: 600; font-size: 13.5px; transition: all .12s;
   }
-  .btn.btn-dark {
-    background: var(--accent); color: #fff; border: 1px solid var(--accent);
-    font-weight: 600;
-  }
-  .btn.btn-dark:hover { background: var(--accent-hover); border-color: var(--accent-hover); transform: translateY(-1px); }
-  .cream .btn.btn-dark { color: #fff; }
-  .btn.btn-ghost {
-    background: transparent; color: var(--text); border: 1px solid var(--line);
-  }
-  .btn.btn-ghost:hover { border-color: var(--text2); }
-  .btn-lg { padding: .75rem 1.4rem; font-size: 14.5px; }
+  .btn-orange:hover { background: #ff8b4f; }
 
-  /* hero — side-by-side */
-  .hero { padding: 4rem 0 5rem; }
-  .hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
-  @media (max-width: 900px) { .hero-grid { grid-template-columns: 1fr; gap: 2.5rem; } }
+  /* HERO */
+  .hero { padding: 3rem 0 4rem; }
+  .hero-grid { display: grid; grid-template-columns: 1fr 1.05fr; gap: 4rem; align-items: center; }
+  @media (max-width: 960px) { .hero-grid { grid-template-columns: 1fr; gap: 2.5rem; } }
   .hero h1 {
-    font-size: clamp(38px, 5vw, 60px); line-height: 1.04;
-    margin: 0 0 1.25rem; font-weight: 700; max-width: 13ch;
-    letter-spacing: -.025em;
+    font-size: clamp(40px, 5.5vw, 60px);
+    line-height: 1; letter-spacing: -.025em; font-weight: 600;
+    margin: 0 0 1.5rem; max-width: 12ch;
   }
-  .hero h1 .strike {
-    color: var(--accent); position: relative; white-space: nowrap;
-  }
-  .hero h1 .strike::after {
-    content: ''; position: absolute; left: 0; right: 0; top: 56%;
-    height: 6px; background: var(--accent);
-    transform: rotate(-2deg); border-radius: 3px;
-  }
-  .hero h1 .underline {
-    background-image: linear-gradient(transparent 60%, var(--accent) 60%, var(--accent) 88%, transparent 88%);
-    background-repeat: no-repeat; padding: 0 .15em;
-  }
+  .hero h1 .gr { color: var(--accent); }
   .hero p.lede {
-    font-size: 19px; color: var(--text2); max-width: 580px;
-    line-height: 1.5; margin: 0 0 2rem;
+    color: var(--text2); font-size: 16px; max-width: 460px;
+    margin: 0 0 2rem; line-height: 1.55;
   }
-  .hero .cta { display: flex; gap: .75rem; align-items: center; flex-wrap: wrap; }
-  .hero .meta { color: var(--muted); font-size: 13px; margin-top: 1rem; }
+  .hero .cta { display: flex; gap: .75rem; align-items: center; flex-wrap: wrap; margin-bottom: 1.25rem; }
+  .btn-cta {
+    padding: .85rem 1.5rem; border-radius: 9px; font-size: 14px; font-weight: 600;
+    display: inline-flex; align-items: center; gap: .4rem; transition: all .12s;
+  }
+  .btn-cta.orange { background: var(--accent); color: #fff; }
+  .btn-cta.orange:hover { background: #ff8b4f; transform: translateY(-1px); }
+  .btn-cta.ghost {
+    background: transparent; color: var(--text);
+    border: 1px solid var(--line-strong);
+  }
+  .btn-cta.ghost:hover { border-color: var(--text2); }
+  .meta {
+    color: var(--text2); font-size: 13px;
+    display: inline-flex; align-items: center; gap: .4rem;
+  }
+  .meta .check { color: var(--green); }
 
-  /* product mockup */
+  /* hero mockup */
   .mockup {
-    border: 1px solid var(--line); border-radius: 14px;
-    background: var(--bg-card);
-    box-shadow: 0 30px 80px -20px rgba(0,0,0,.55);
-    overflow: hidden;
-    transform: rotate(.3deg);
+    background: var(--bg-card); border: 1px solid var(--line);
+    border-radius: 14px; padding: 0; overflow: hidden;
+    box-shadow: 0 30px 80px -20px rgba(0,0,0,.6);
   }
-  .hero .mockup { margin-top: 0; }
-  .mockup-bar {
-    background: var(--bg-alt); border-bottom: 1px solid var(--line);
-    padding: .85rem 1rem; display: flex; align-items: center; gap: .85rem;
+  .mock-bar {
+    padding: .65rem 1rem; border-bottom: 1px solid var(--line);
+    display: flex; align-items: center; gap: .65rem;
+    font-family: 'Geist Mono', monospace; font-size: 11px; color: var(--muted);
   }
-  .mockup-bar .dots { display: inline-flex; gap: 6px; }
-  .mockup-bar .dots span { width: 11px; height: 11px; border-radius: 50%; background: #d4d4d4; }
-  .mockup-bar .url-strip {
-    flex: 1; background: var(--bg); border: 1px solid var(--line);
-    border-radius: 6px; padding: .25rem .65rem; font: 12px 'Geist Mono', monospace;
-    color: var(--muted); text-align: center;
+  .mock-bar .dots { display: inline-flex; gap: 6px; }
+  .mock-bar .dots span { width: 10px; height: 10px; border-radius: 50%; background: #2a2a2a; }
+  .mock-bar .ttl { flex: 1; text-align: center; }
+  .mock-body { padding: 1.25rem; }
+  .mock-search {
+    display: flex; gap: .5rem; align-items: center;
+    background: rgba(255,255,255,.04); border: 1px solid var(--line);
+    border-radius: 8px; padding: .5rem .85rem; margin-bottom: 1rem;
+    font-size: 13.5px;
   }
-  .mockup-bar .dots span { background: #2a2a2a; }
-  .mockup-body { padding: 1.75rem; }
-  .mockup-body .topline { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
-  .mockup-body .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
-  .mock-stat {
-    border: 1px solid var(--line); border-radius: 10px; padding: 1rem;
-  }
-  .mock-stat .num { font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
-  .mock-stat.hero-stat .num { color: var(--accent); }
-  .mock-stat .lbl {
+  .mock-search .lhs { color: var(--muted); flex: 1; }
+  .mock-search .pill {
     font-family: 'Geist Mono', monospace; font-size: 10.5px;
-    color: var(--muted); text-transform: uppercase; letter-spacing: .05em;
-    margin-top: .35rem;
+    background: var(--accent-soft); color: var(--accent);
+    padding: .15rem .55rem; border-radius: 4px; font-weight: 600;
   }
-  .mock-leads { display: flex; flex-direction: column; gap: .5rem; }
+  .mock-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: .5rem; margin-bottom: 1rem; }
+  .mock-stat {
+    background: rgba(255,255,255,.025); border: 1px solid var(--line);
+    border-radius: 8px; padding: .65rem .8rem;
+  }
+  .mock-stat .n { font-size: 22px; font-weight: 700; letter-spacing: -.02em; line-height: 1; }
+  .mock-stat .l {
+    font-family: 'Geist Mono', monospace; font-size: 9px; color: var(--muted);
+    text-transform: uppercase; letter-spacing: .08em; margin-top: .35rem; font-weight: 600;
+  }
+  .mock-leads { display: flex; flex-direction: column; gap: .45rem; }
   .mock-lead {
-    display: grid; grid-template-columns: auto 1fr auto; gap: 1rem;
-    border: 1px solid var(--line); border-radius: 10px; padding: .85rem 1rem;
-    align-items: center;
+    display: grid; grid-template-columns: auto 1fr auto; gap: .85rem; align-items: center;
+    padding: .7rem .85rem; border: 1px solid var(--line); border-radius: 8px;
+    background: rgba(255,255,255,.015);
   }
   .mock-lead.hit { border-left: 3px solid var(--green); }
-  .avatar-circle {
-    width: 36px; height: 36px; border-radius: 50%;
-    background: linear-gradient(135deg, #f97316, #fbbf24);
-    color: var(--bg);
-    display: grid; place-items: center; font-weight: 700; font-size: 14px;
+  .avi {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), #fbbf24);
+    color: #0a0a0a; display: grid; place-items: center;
+    font-weight: 700; font-size: 13px;
   }
-  .lead-handle {
-    display: flex; align-items: center; gap: .5rem; flex-wrap: wrap;
-    font-weight: 600; font-size: 14px;
+  .mock-lead .top {
+    display: flex; align-items: center; gap: .45rem; flex-wrap: wrap; margin-bottom: .15rem;
   }
-  .lead-bio { color: var(--text2); font-size: 12.5px; margin-top: .15rem; }
-  .lead-url { font-family: 'Geist Mono', monospace; font-size: 11.5px; color: var(--muted); margin-top: .2rem; }
+  .mock-lead .h { font-weight: 600; font-size: 13.5px; }
   .badge {
-    font-family: 'Geist Mono', monospace; font-size: 10px;
-    padding: .12rem .5rem; border-radius: 4px;
+    font-family: 'Geist Mono', monospace; font-size: 9.5px;
+    padding: .12rem .45rem; border-radius: 4px;
     text-transform: uppercase; letter-spacing: .04em; font-weight: 600;
   }
-  .badge.active { background: var(--green-soft); color: var(--green); }
-  .badge.newb { background: var(--accent-soft); color: var(--accent); }
-  .badge.est { background: #eff6ff; color: #2563eb; }
+  .badge.active { background: rgba(74,222,128,.14); color: var(--green); }
+  .badge.ecomm { background: rgba(56,189,248,.14); color: #38bdf8; }
+  .badge.store { background: rgba(167,139,250,.14); color: #a78bfa; }
+  .mock-lead .body { font-size: 12px; color: var(--text2); line-height: 1.4; }
+  .copy-btn {
+    background: rgba(255,255,255,.05); color: var(--text);
+    border: 1px solid var(--line); border-radius: 6px;
+    padding: .35rem .8rem; font: inherit; font-size: 12px; cursor: pointer;
+  }
 
-  /* social proof */
-  .social-proof {
-    padding: 2rem 0;
+  /* STATS BAR */
+  .stats-bar {
+    border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+    padding: 1.75rem 0;
   }
-  .social-proof.cream { border-top: 0; border-bottom: 1px solid var(--line-dark); }
-  .social-row {
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem;
-    text-align: center;
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+  @media (max-width: 720px) { .stats-row { grid-template-columns: repeat(2, 1fr); } }
+  .stat-tile { display: flex; align-items: center; gap: .75rem; }
+  .stat-tile .ico {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: var(--accent-soft); color: var(--accent);
+    display: grid; place-items: center; flex-shrink: 0;
   }
-  .stat-tile .num {
-    font-size: 36px; font-weight: 700; letter-spacing: -.025em;
-    color: var(--accent);
-  }
-  .stat-tile .lbl { font-size: 13px; color: var(--text2); margin-top: .25rem; font-weight: 500; }
-  .stat-tile { padding: 1rem; }
+  .stat-tile .num { font-size: 22px; font-weight: 700; letter-spacing: -.02em; color: var(--accent); line-height: 1.1; }
+  .stat-tile .lbl { font-size: 12px; color: var(--text2); }
 
-  /* features */
-  .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem; }
+  /* TWO-COL SECTION (left text, right cards) */
+  .two-col { display: grid; grid-template-columns: 1fr 1.4fr; gap: 4rem; align-items: start; }
+  @media (max-width: 960px) { .two-col { grid-template-columns: 1fr; gap: 2rem; } }
+  .two-col h2 {
+    font-size: clamp(28px, 3.8vw, 38px);
+    line-height: 1.1; letter-spacing: -.02em; margin: 0 0 1rem; font-weight: 600; max-width: 14ch;
+  }
+  .two-col p { color: var(--text2); font-size: 15px; line-height: 1.55; margin: 0; max-width: 36ch; }
+
+  .feat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  @media (max-width: 720px) { .feat-grid { grid-template-columns: 1fr; } }
   .feat-card {
-    border: 1px solid var(--line); border-radius: 12px; padding: 1.75rem;
-    background: var(--bg-card);
+    background: var(--bg-card); border: 1px solid var(--line);
+    border-radius: 12px; padding: 1.5rem;
   }
-  .feat-icon {
-    width: 38px; height: 38px; border-radius: 10px;
-    background: var(--accent); color: #fff;
-    display: grid; place-items: center;
-    margin-bottom: 1rem;
+  .feat-card .icon {
+    width: 38px; height: 38px; border-radius: 9px;
+    background: var(--accent-soft); color: var(--accent);
+    display: grid; place-items: center; margin-bottom: 1rem;
   }
-  .feat-card h3 { font-size: 17px; margin: 0 0 .4rem; font-weight: 600; }
-  .feat-card p { color: var(--text2); font-size: 14px; margin: 0; line-height: 1.55; }
+  .feat-card h4 { font-size: 15px; margin: 0 0 .35rem; font-weight: 600; }
+  .feat-card p { font-size: 13px; color: var(--text2); margin: 0; line-height: 1.5; max-width: none; }
 
-  /* section header */
-  .sec-h { max-width: 720px; }
-  .sec-h h2 { font-size: clamp(28px, 4vw, 40px); font-weight: 600; margin: 0 0 .75rem; line-height: 1.1; }
-  .sec-h p { color: var(--text2); font-size: 17px; margin: 0; line-height: 1.5; }
-  .sec-h.center { margin: 0 auto; text-align: center; }
-
-  /* how it works */
-  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin-top: 3rem;
-    border-top: 1px solid var(--line); }
-  .step-item {
-    border-right: 1px solid var(--line); padding: 1.75rem 1.5rem;
+  .step-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: .85rem; }
+  @media (max-width: 720px) { .step-grid { grid-template-columns: repeat(2, 1fr); } }
+  .step-card { padding: 1rem 1.1rem; }
+  .step-card .icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: rgba(255,255,255,.04); color: var(--accent);
+    display: grid; place-items: center; margin-bottom: .85rem;
   }
-  .step-item:last-child { border-right: 0; }
-  .step-item .step-num {
-    font-family: 'Geist Mono', monospace; font-size: 11px;
-    color: var(--muted); margin-bottom: .85rem; font-weight: 500;
-  }
-  .step-item h4 { font-size: 16px; margin: 0 0 .35rem; font-weight: 600; }
-  .step-item p { font-size: 14px; color: var(--text2); margin: 0; line-height: 1.5; }
+  .step-card h4 { font-size: 13.5px; margin: 0 0 .35rem; font-weight: 600; }
+  .step-card p { font-size: 12px; color: var(--text2); margin: 0; line-height: 1.5; }
 
-  /* testimonials */
-  .testimonials { background: var(--bg-alt); }
-  .quote-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem; }
+  /* TESTIMONIALS */
+  .quotes-section { text-align: center; }
+  .quotes-section .eyebrow { text-align: center; }
+  .quotes-section h2 {
+    font-size: clamp(28px, 3.8vw, 38px);
+    line-height: 1.15; letter-spacing: -.02em; margin: 0 auto 3rem;
+    font-weight: 600; max-width: 18ch;
+  }
+  .quotes-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+  @media (max-width: 960px) { .quotes-grid { grid-template-columns: 1fr; } }
   .quote-card {
     background: var(--bg-card); border: 1px solid var(--line);
-    border-radius: 12px; padding: 1.75rem;
-    display: flex; flex-direction: column;
+    border-radius: 12px; padding: 1.6rem; text-align: left;
   }
-  .verified-tag {
-    display: inline-flex; gap: .35rem; align-items: center;
+  .stars { color: var(--accent); font-size: 14px; letter-spacing: .15em; margin-bottom: 1rem; }
+  .quote-card .q { font-size: 14.5px; line-height: 1.55; margin: 0 0 1.5rem; color: var(--text); }
+  .quote-card .who { display: flex; gap: .65rem; align-items: center; }
+  .quote-card .who .avi { width: 32px; height: 32px; font-size: 13px; }
+  .quote-card .who .nm { font-weight: 600; font-size: 13.5px; }
+  .quote-card .who .ttl { font-size: 12px; color: var(--text2); margin-top: .1rem; }
+
+  /* PRICING */
+  .pricing-section { text-align: center; }
+  .pricing-section .eyebrow { text-align: center; }
+  .pricing-section h2 {
+    font-size: clamp(28px, 3.8vw, 38px);
+    line-height: 1.15; letter-spacing: -.02em; margin: 0 auto 3rem;
+    font-weight: 600; max-width: 22ch;
+  }
+  .plans { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; max-width: 720px; margin: 0 auto; }
+  @media (max-width: 720px) { .plans { grid-template-columns: 1fr; } }
+  .plan {
+    background: var(--bg-card); border: 1px solid var(--line);
+    border-radius: 14px; padding: 1.75rem; text-align: left; position: relative;
+  }
+  .plan.featured { border-color: var(--accent-line); background: linear-gradient(180deg, rgba(255,122,60,.05), transparent 60%), var(--bg-card); }
+  .plan-tag {
+    position: absolute; top: 1.4rem; right: 1.4rem;
     background: var(--accent-soft); color: var(--accent);
-    font-family: 'Geist Mono', monospace; font-size: 10.5px;
-    padding: .2rem .55rem; border-radius: 4px; font-weight: 600;
-    text-transform: uppercase; letter-spacing: .04em;
-    align-self: flex-start; margin-bottom: 1rem;
+    font-family: 'Geist Mono', monospace; font-size: 10px;
+    padding: .2rem .5rem; border-radius: 4px;
+    text-transform: uppercase; letter-spacing: .06em; font-weight: 700;
   }
-  .stars { color: var(--accent); font-size: 14px; letter-spacing: .1em; margin-bottom: .85rem; }
-  .quote-card p.q {
-    font-size: 15px; line-height: 1.55; margin: 0 0 1.5rem; color: var(--text);
-    flex: 1;
+  .plan h3 { font-size: 16px; margin: 0 0 .85rem; font-weight: 600; }
+  .plan .pr { font-size: 38px; font-weight: 700; letter-spacing: -.025em; line-height: 1; margin-bottom: .25rem; }
+  .plan .pr small { font-size: 14px; color: var(--text2); font-weight: 400; }
+  .plan .desc { color: var(--text2); font-size: 13.5px; margin-bottom: 1.25rem; line-height: 1.5; }
+  .plan ul { list-style: none; padding: 0; margin: 0 0 1.25rem; }
+  .plan li {
+    font-size: 13.5px; padding: .35rem 0; color: var(--text2);
+    display: flex; gap: .55rem; align-items: center;
   }
-  .who { display: flex; gap: .75rem; align-items: center; }
-  .who .avi {
-    width: 36px; height: 36px; border-radius: 50%;
-    background: linear-gradient(135deg, #f97316 0%, #fbbf24 100%);
-    color: var(--bg); display: grid; place-items: center; font-weight: 700; font-size: 14px;
+  .plan li::before { content: "✓"; color: var(--accent); font-weight: 700; }
+  .plan-btn {
+    display: block; width: 100%; padding: .8rem; border-radius: 9px;
+    font-size: 13.5px; font-weight: 600; text-align: center; transition: all .12s;
   }
-  .who .nm { font-weight: 600; font-size: 13.5px; }
-  .who .ttl { font-size: 12px; color: var(--muted); }
+  .plan-btn.ghost {
+    background: transparent; color: var(--text); border: 1px solid var(--line-strong);
+  }
+  .plan-btn.ghost:hover { border-color: var(--text2); }
+  .plan-btn.fill { background: var(--accent); color: #fff; }
+  .plan-btn.fill:hover { background: #ff8b4f; }
 
-  /* pricing */
-  .pricing-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-top: 3rem; max-width: 720px; margin-left: auto; margin-right: auto; }
-  .price-card {
-    border: 1px solid var(--line); border-radius: 14px; padding: 2rem;
-    background: var(--bg-card);
+  /* FAQ */
+  .faq-section { display: grid; grid-template-columns: 220px 1fr; gap: 4rem; align-items: start; }
+  @media (max-width: 800px) { .faq-section { grid-template-columns: 1fr; gap: 2rem; } }
+  .faq-section .head .eyebrow { margin-bottom: .25rem; }
+  .faq-section .head h2 {
+    font-size: clamp(28px, 3.8vw, 38px); line-height: 1.15;
+    letter-spacing: -.02em; margin: 0; font-weight: 600;
   }
-  .price-card.featured { border: 2px solid var(--accent); position: relative; }
-  .price-card .pp {
-    font-family: 'Geist Mono', monospace; font-size: 11px;
-    color: var(--muted); text-transform: uppercase; letter-spacing: .06em;
-    margin-bottom: .5rem;
-  }
-  .price-card h3 { font-size: 22px; margin: 0 0 .5rem; font-weight: 600; }
-  .price-card .pr {
-    font-size: 40px; font-weight: 700; letter-spacing: -.02em; margin-bottom: .25rem;
-  }
-  .price-card .pr small { font-size: 14px; color: var(--muted); font-weight: 400; }
-  .price-card .desc { color: var(--text2); font-size: 14px; margin-bottom: 1.5rem; line-height: 1.5; }
-  .price-card ul { list-style: none; padding: 0; margin: 0 0 1.5rem; }
-  .price-card li {
-    font-size: 14px; padding: .4rem 0; color: var(--text2);
-    display: flex; gap: .5rem; align-items: center;
-  }
-  .price-card li::before { content: "✓"; color: var(--green); font-weight: 600; }
-  .featured-tag {
-    position: absolute; top: -10px; right: 1.5rem;
-    background: var(--accent); color: var(--bg); padding: .25rem .65rem;
-    font-size: 11px; border-radius: 4px;
-    font-family: 'Geist Mono', monospace; text-transform: uppercase; letter-spacing: .06em;
-    font-weight: 600;
-  }
-
-  /* faq */
-  .faq-list { margin-top: 2.5rem; max-width: 760px; }
+  .faq-list { background: var(--bg-card); border: 1px solid var(--line); border-radius: 12px; }
   .faq-item { border-bottom: 1px solid var(--line); }
+  .faq-item:last-child { border-bottom: 0; }
   .faq-item summary {
-    list-style: none; cursor: pointer; padding: 1.25rem 0;
-    font-weight: 500; font-size: 16px; display: flex; justify-content: space-between;
-    align-items: center;
+    list-style: none; cursor: pointer; padding: 1rem 1.25rem;
+    font-size: 14.5px; font-weight: 500;
+    display: flex; justify-content: space-between; align-items: center;
   }
-  .faq-item summary::after { content: "+"; color: var(--muted); font-size: 22px; font-weight: 300; }
-  .faq-item[open] summary::after { content: "−"; }
   .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary::after { content: "+"; color: var(--text2); font-size: 22px; font-weight: 300; }
+  .faq-item[open] summary::after { content: "−"; }
   .faq-item p {
-    color: var(--text2); margin: 0 0 1.25rem; font-size: 14.5px; line-height: 1.6;
-    max-width: 620px;
+    color: var(--text2); margin: 0 1.25rem 1.25rem;
+    font-size: 13.5px; line-height: 1.6; max-width: 560px;
   }
 
-  /* cta */
-  .final {
-    background: linear-gradient(135deg, #1c1c1c 0%, #0f0f0f 100%);
-    border: 1px solid var(--line);
-    border-radius: 16px; padding: 4rem 3rem; text-align: center; margin: 0 auto;
-    position: relative; overflow: hidden;
+  /* GET STARTED CTA */
+  .cta-section .cta-card {
+    background: var(--bg-card); border: 1px solid var(--accent-line);
+    border-radius: 16px; padding: 3rem;
+    background-image:
+      radial-gradient(400px circle at 5% 100%, rgba(255,122,60,.06), transparent 50%),
+      radial-gradient(400px circle at 95% 0%, rgba(255,122,60,.04), transparent 50%);
   }
-  .final::before {
-    content: ''; position: absolute; inset: 0;
-    background: radial-gradient(600px circle at 50% 0%, rgba(249,115,22,.18), transparent 50%);
-    pointer-events: none;
+  .cta-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 3rem; align-items: center; }
+  @media (max-width: 800px) { .cta-grid { grid-template-columns: 1fr; gap: 2rem; } }
+  .cta-card h2 {
+    font-size: clamp(28px, 3.8vw, 38px); line-height: 1.1;
+    letter-spacing: -.02em; margin: 0 0 1.5rem; font-weight: 600;
   }
-  .final > * { position: relative; }
-  .final h2 { font-size: clamp(28px, 4vw, 40px); margin: 0 0 .75rem; }
-  .final p { color: var(--text2); font-size: 17px; margin: 0 0 2rem; }
-  .final .btn-dark {
-    background: var(--accent); color: var(--bg); border-color: var(--accent);
+  .cta-checks { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: .65rem; }
+  .cta-checks li { display: flex; gap: .65rem; align-items: flex-start; font-size: 13.5px; color: var(--text2); }
+  .cta-checks li::before {
+    content: "✓"; color: var(--accent); font-weight: 700;
+    flex-shrink: 0; line-height: 1.5;
   }
-  .final .btn-dark:hover { background: #fb923c; border-color: #fb923c; }
+  .form-card {
+    background: var(--bg); border: 1px solid var(--line);
+    border-radius: 12px; padding: 1.75rem;
+  }
+  .form-card .lbl {
+    font-family: 'Geist Mono', monospace; font-size: 11px;
+    color: var(--accent); text-transform: uppercase; letter-spacing: .08em;
+    font-weight: 600; margin-bottom: .85rem;
+  }
+  .form-card h3 { margin: 0 0 1.25rem; font-size: 18px; font-weight: 600; }
+  .form-card label { display: block; font-size: 11px; color: var(--text2); margin: 0 0 .35rem;
+    text-transform: uppercase; letter-spacing: .06em; font-weight: 600; }
+  .form-card input[type=email] {
+    width: 100%; background: rgba(255,255,255,.04); color: var(--text);
+    border: 1px solid var(--line); border-radius: 8px;
+    padding: .75rem .9rem; font: inherit; font-size: 14px; margin-bottom: 1rem;
+    transition: border-color .12s;
+  }
+  .form-card input[type=email]:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(255,122,60,.12); }
+  .form-card button {
+    width: 100%; padding: .85rem; font: inherit; font-weight: 600; cursor: pointer;
+    background: var(--accent); color: #fff; border: 0; border-radius: 8px;
+    font-size: 14px; transition: all .12s;
+  }
+  .form-card button:hover { background: #ff8b4f; }
+  .form-card .meta-line {
+    text-align: center; margin-top: .85rem; font-size: 12px; color: var(--text2);
+  }
 
-  /* footer */
-  footer.f { padding: 3rem 0 2rem; border-top: 1px solid var(--line); }
-  .f-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 2rem; }
-  .f-grid h5 { font-size: 13px; margin: 0 0 1rem; font-weight: 600; }
+  /* FOOTER */
+  footer.f { padding: 3rem 0 2rem; border-top: 1px solid var(--line); margin-top: 3rem; }
+  .f-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 2.5rem; margin-bottom: 2.5rem; }
+  @media (max-width: 720px) { .f-grid { grid-template-columns: 1fr 1fr; } }
+  .f-grid h5 {
+    font-family: 'Geist Mono', monospace; font-size: 11px;
+    color: var(--text2); text-transform: uppercase; letter-spacing: .08em;
+    margin: 0 0 1rem; font-weight: 600;
+  }
   .f-grid ul { list-style: none; padding: 0; margin: 0; }
-  .f-grid li { padding: .25rem 0; font-size: 13.5px; color: var(--text2); }
+  .f-grid li { padding: .25rem 0; font-size: 13.5px; }
+  .f-grid li a { color: var(--text2); }
   .f-grid li a:hover { color: var(--text); }
+  .f-grid .blurb { color: var(--text2); font-size: 13px; max-width: 240px; line-height: 1.5; margin-top: .85rem; }
   .f-bottom {
-    border-top: 1px solid var(--line); margin-top: 2.5rem; padding-top: 1.5rem;
-    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
-    color: var(--muted); font-size: 12.5px;
+    border-top: 1px solid var(--line); padding-top: 1.25rem;
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
+    color: var(--muted); font-size: 12px;
   }
-
-  @media (max-width: 720px) {
-    .features-grid, .quote-grid, .pricing-grid, .steps, .social-row, .f-grid { grid-template-columns: 1fr; }
-    .steps { border-top: 0; }
-    .step-item { border-right: 0; border-bottom: 1px solid var(--line); }
-    .mockup-body .stat-row { grid-template-columns: repeat(2, 1fr); }
-    .final { padding: 3rem 1.5rem; }
+  .f-social { display: flex; gap: .85rem; align-items: center; }
+  .f-social a {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: rgba(255,255,255,.04); display: grid; place-items: center;
+    color: var(--text2); transition: all .12s;
   }
+  .f-social a:hover { color: var(--text); background: rgba(255,255,255,.08); }
 </style>
 </head>
 <body>
@@ -580,12 +572,11 @@ LANDING_PAGE = r"""<!doctype html>
 <nav class="nav">
   <div class="container inner">
     <a href="/" class="brand-mark">
-      <svg viewBox="0 0 32 32" fill="none">
-        <rect width="32" height="32" rx="7" fill="#0a0a0a"/>
-        <path d="M8 8 L24 24" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/>
-        <path d="M24 8 L8 24" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/>
-        <circle cx="16" cy="16" r="3.4" fill="#f97316"/>
-      </svg>
+      <span class="x">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </span>
       ShopifySift
     </a>
     <div class="nav-r">
@@ -593,10 +584,10 @@ LANDING_PAGE = r"""<!doctype html>
       <a href="#pricing">Pricing</a>
       <a href="#faq">FAQ</a>
       {% if user %}
-        <a href="/dashboard" class="btn btn-dark">Dashboard</a>
+        <a href="/dashboard" class="btn-orange">Dashboard</a>
       {% else %}
         <a href="/login">Log in</a>
-        <a href="/signup" class="btn btn-dark">Start free</a>
+        <a href="/dashboard" class="btn-orange">Dashboard</a>
       {% endif %}
     </div>
   </div>
@@ -606,320 +597,315 @@ LANDING_PAGE = r"""<!doctype html>
   <div class="container">
     <div class="hero-grid">
       <div>
-        <div class="eyebrow" style="color: var(--accent); font-weight: 600;">// Cold-DM lead source for Shopify operators</div>
-        <h1>Real Shopify operators.<br>Hiding in <span class="underline">X bios</span>.</h1>
-        <p class="lede" style="font-size: 17px; max-width: 480px;">Apollo doesn't have these handles. Clay doesn't either. They're founders posting their store URL in their X bio — ShopifySift sifts them out by niche, in about 12 seconds.</p>
+        <div class="eyebrow">// The #1 lead search tool for Shopify operators</div>
+        <h1>Real Shopify operators. Hiding in <span class="gr">X bios</span>.</h1>
+        <p class="lede">Apollo doesn't have these leads. Clay doesn't either. ShopifySift finds founders posting their store, URL, or niche in their X bio — so you can reach out first.</p>
         <div class="cta">
-          <a href="/signup" class="btn btn-dark btn-lg">Start free →</a>
-          <a href="#how" class="btn btn-ghost btn-lg">See how it works</a>
+          <a href="/signup" class="btn-cta orange">Start free →</a>
+          <a href="#how" class="btn-cta ghost">See how it works</a>
         </div>
-        <p class="meta">5 free searches. No credit card required.</p>
+        <div class="meta"><span class="check">✓</span> No credit card. No setup. Start in seconds.</div>
       </div>
-
       <div class="mockup">
-      <div class="mockup-bar">
-        <div class="dots"><span></span><span></span><span></span></div>
-        <div class="url-strip">shopifysift.app/dashboard</div>
-      </div>
-      <div class="mockup-body">
-        <div class="topline">
-          <span style="font-family:'Geist Mono',monospace; font-size:12px; color:var(--muted);">Search: "skincare"</span>
-          <span style="background:var(--green-soft); color:var(--green); padding:.2rem .55rem; border-radius:4px; font: 11px 'Geist Mono',monospace; font-weight:600;">14.2s</span>
+        <div class="mock-bar">
+          <span class="dots"><span></span><span></span><span></span></span>
+          <span class="ttl">SHOPIFYSIFT · LIVE SEARCH</span>
         </div>
-        <div class="stat-row">
-          <div class="mock-stat hero-stat"><div class="num">7</div><div class="lbl">Active leads</div></div>
-          <div class="mock-stat"><div class="num">4</div><div class="lbl">Newbs</div></div>
-          <div class="mock-stat"><div class="num">3</div><div class="lbl">Established</div></div>
-          <div class="mock-stat"><div class="num">1.2k</div><div class="lbl">Raw results</div></div>
-        </div>
-        <div class="mock-leads">
-          <div class="mock-lead hit">
-            <div class="avatar-circle">I</div>
-            <div>
-              <div class="lead-handle">@indiebeauty_co
-                <span class="badge active">● active</span>
-                <span class="badge newb">newb</span>
-              </div>
-              <div class="lead-bio">Indie skincare brand · clean ingredients · founder-run · DM for collabs</div>
-              <div class="lead-url">indiebeauty.myshopify.com — 47 products, updated today</div>
-            </div>
-            <button class="btn btn-ghost" style="font-size:12px; padding:.35rem .7rem;">Copy</button>
+        <div class="mock-body">
+          <div class="mock-search">
+            <span class="lhs">Search keywords...</span>
+            <span class="pill">USA · X</span>
           </div>
-          <div class="mock-lead hit">
-            <div class="avatar-circle">N</div>
-            <div>
-              <div class="lead-handle">@noporeshow
-                <span class="badge active">● active</span>
-                <span class="badge newb">newb</span>
-              </div>
-              <div class="lead-bio">Founder of NoPoreShow · launching new SPF July · we just hit 50k MRR</div>
-              <div class="lead-url">noporeshow.myshopify.com — 12 products, updated 2d ago</div>
-            </div>
-            <button class="btn btn-ghost" style="font-size:12px; padding:.35rem .7rem;">Copy</button>
+          <div class="mock-stats">
+            <div class="mock-stat"><div class="n">7</div><div class="l">Active Leads</div></div>
+            <div class="mock-stat"><div class="n">4</div><div class="l">New today</div></div>
+            <div class="mock-stat"><div class="n">3</div><div class="l">Replied</div></div>
+            <div class="mock-stat"><div class="n">1.2k</div><div class="l">Total found</div></div>
           </div>
-          <div class="mock-lead hit">
-            <div class="avatar-circle">D</div>
-            <div>
-              <div class="lead-handle">@derma_lab
-                <span class="badge active">● active</span>
-                <span class="badge est">established</span>
+          <div class="mock-leads">
+            <div class="mock-lead">
+              <div class="avi">J</div>
+              <div>
+                <div class="top">
+                  <span class="h">@jackkessler_</span>
+                  <span class="badge active">● active</span>
+                  <span class="badge ecomm">e-comm</span>
+                </div>
+                <div class="body">Building @TrendlyStore — premium dropshipping products.</div>
               </div>
-              <div class="lead-bio">Clinical-grade skincare. 8 years bootstrapped.</div>
-              <div class="lead-url">dermalab.com — 23 products, updated 1d ago</div>
+              <button class="copy-btn">Copy</button>
             </div>
-            <button class="btn btn-ghost" style="font-size:12px; padding:.35rem .7rem;">Copy</button>
+            <div class="mock-lead hit">
+              <div class="avi">N</div>
+              <div>
+                <div class="top">
+                  <span class="h">@nurecom</span>
+                  <span class="badge active">● active</span>
+                  <span class="badge ecomm">e-comm</span>
+                </div>
+                <div class="body">Founder of @NureStore — free shipping over $79.</div>
+              </div>
+              <button class="copy-btn">Copy</button>
+            </div>
+            <div class="mock-lead">
+              <div class="avi">D</div>
+              <div>
+                <div class="top">
+                  <span class="h">@domen_luk</span>
+                  <span class="badge active">● active</span>
+                  <span class="badge store">store setup</span>
+                </div>
+                <div class="body">CPA marketer. Building in the health supplement niche.</div>
+              </div>
+              <button class="copy-btn">Copy</button>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    </div>
   </div>
 </section>
 
-<section class="social-proof tight cream" style="padding: 2rem 0;">
+<div class="stats-bar">
   <div class="container">
-    <div class="social-row">
-      <div class="stat-tile"><div class="num">14,000+</div><div class="lbl">Verified handles indexed</div></div>
-      <div class="stat-tile"><div class="num">50/search</div><div class="lbl">Average active leads</div></div>
-      <div class="stat-tile"><div class="num">12s</div><div class="lbl">First lead in your inbox</div></div>
-      <div class="stat-tile"><div class="num">0</div><div class="lbl">Bounced emails ever</div></div>
-    </div>
-  </div>
-</section>
-
-<section id="features" class="cream">
-  <div class="container">
-    <div class="sec-h">
-      <div class="eyebrow">Built different</div>
-      <h2>Leads with a face, not a row in a CSV.</h2>
-      <p>Apollo gives you 50,000 emails. Half bounce. The other half ignore you. We give you 50 X handles whose bios literally say "founder of [their store]." They built it. They'll respond.</p>
-    </div>
-    <div class="features-grid">
-      <div class="feat-card">
-        <div class="feat-icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-        </div>
-        <h3>Bio-level targeting</h3>
-        <p>We dork search engines for X bios containing Shopify URLs. Not random ecom keywords — actual stores founders are pointing to.</p>
+    <div class="stats-row">
+      <div class="stat-tile">
+        <div class="ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+        <div><div class="num">14,000+</div><div class="lbl">Verified founders found</div></div>
       </div>
-      <div class="feat-card">
-        <div class="feat-icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 11 3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-        </div>
-        <h3>Active-store check</h3>
-        <p>Every URL gets verified. No password-gated dev stores, no abandoned catalogs. "Active" means a real catalog updated within 12 months.</p>
+      <div class="stat-tile">
+        <div class="ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+        <div><div class="num">50/search</div><div class="lbl">Average active leads</div></div>
       </div>
-      <div class="feat-card">
-        <div class="feat-icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-        </div>
-        <h3>One-click outreach</h3>
-        <p>Click any handle to copy. "Copy all" lets you paste 50+ handles into your DM tool. CSV export for Apollo / Clay imports.</p>
+      <div class="stat-tile">
+        <div class="ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <div><div class="num">12s</div><div class="lbl">First lead in your inbox</div></div>
+      </div>
+      <div class="stat-tile">
+        <div class="ico"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <div><div class="num">0</div><div class="lbl">Bounced emails ever</div></div>
       </div>
     </div>
   </div>
-</section>
+</div>
 
-<section id="how" class="cream">
+<section id="features">
   <div class="container">
-    <div class="sec-h center">
-      <div class="eyebrow">// How it works</div>
-      <h2>Type a niche. Get DM-ready handles. That's it.</h2>
-    </div>
-    <div class="steps">
-      <div class="step-item">
-        <div class="step-num">01</div>
-        <h4>Pick a niche</h4>
-        <p>"Skincare", "pet supplies", "art prints" — or click a preset pack to fill 10+ keywords at once.</p>
-      </div>
-      <div class="step-item">
-        <div class="step-num">02</div>
-        <h4>Dork engines</h4>
-        <p>DDG + Brave query X for bios linking to .myshopify.com or naming Shopify-stack tools.</p>
-      </div>
-      <div class="step-item">
-        <div class="step-num">03</div>
-        <h4>Verify live</h4>
-        <p>Each store probed for Shopify fingerprints + active product catalog. Dormant stores filtered out.</p>
-      </div>
-      <div class="step-item">
-        <div class="step-num">04</div>
-        <h4>Copy and DM</h4>
-        <p>Click a handle, paste into X DMs or your outreach tool. Bulk-copy and CSV export available.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="testimonials cream">
-  <div class="container">
-    <div class="sec-h center">
-      <div class="eyebrow">Used by</div>
-      <h2>Operators replacing $300/mo lead tools.</h2>
-    </div>
-    <div class="quote-grid">
-      <div class="quote-card">
-        <div class="verified-tag">★ Verified Operator</div>
-        <div class="stars">★★★★★</div>
-        <p class="q">"I cancelled Apollo after a week. The handles here actually reply because the DM is about something they built — their store — not a generic 'noticed you're growing.'"</p>
-        <div class="who">
-          <div class="avi">M</div>
-          <div><div class="nm">Marcus T.</div><div class="ttl">Shopify Plus agency, founder</div></div>
-        </div>
-      </div>
-      <div class="quote-card">
-        <div class="verified-tag">★ Verified Operator</div>
-        <div class="stars">★★★★★</div>
-        <p class="q">"Used to spend 4 hours scraping LinkedIn for ecom founders. ShopifySift pulls 80 in 5 minutes and they're all on X — better DM channel anyway."</p>
-        <div class="who">
-          <div class="avi">S</div>
-          <div><div class="nm">Sara L.</div><div class="ttl">Klaviyo consultant</div></div>
-        </div>
-      </div>
-      <div class="quote-card">
-        <div class="verified-tag">★ Verified Operator</div>
-        <div class="stars">★★★★★</div>
-        <p class="q">"The 'newb' tag is gold. Filter to .myshopify.com only and you get pre-launch operators desperate for help. 22% reply rate on cold DMs."</p>
-        <div class="who">
-          <div class="avi">D</div>
-          <div><div class="nm">Devin K.</div><div class="ttl">Conversion auditor</div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="cream" style="border-top: 1px solid var(--line-dark);">
-  <div class="container">
-    <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 4rem; align-items: center;">
+    <div class="two-col">
       <div>
-        <div class="eyebrow">// About ShopifySift</div>
-        <h2 style="font-size: clamp(28px, 4vw, 42px); margin: .5rem 0 1.25rem; line-height: 1.1; font-weight: 600;">We sift X bios so you don't waste a single DM.</h2>
-        <p class="text2" style="font-size: 16px; line-height: 1.6; margin-bottom: 1rem;">Apollo and ZoomInfo gave you 50,000 names. Half bounced, the rest blocked. We sift X bios for active Shopify operators who literally invited you to ask about their store.</p>
-        <p class="text2" style="font-size: 16px; line-height: 1.6;">Every handle returned has been verified live: real Shopify HTML signatures, real product catalog, updated within the year. No dev stores. No abandoned drops. No ghosts.</p>
+        <div class="eyebrow">// Built different</div>
+        <h2>Leads with a face, not a row in a CSV.</h2>
+        <p>Apollo gives you 50,000+ emails. Half bounce. The other half ignore you. We dig into X handles whose bios literally say "founder of", "new store", "my build", etc. They'll respond.</p>
       </div>
-      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
-        <div style="border-left: 3px solid var(--accent); padding-left: 1.25rem;">
-          <div style="font-size: 38px; font-weight: 700; letter-spacing: -.02em; line-height: 1;">14k+</div>
-          <div style="font-size: 12.5px; color: var(--text2-dark); margin-top: .35rem; font-weight: 500;">X handles indexed</div>
+      <div class="feat-grid">
+        <div class="feat-card">
+          <div class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></div>
+          <h4>Bio-level targeting</h4>
+          <p>We look exactly where X is full of unfiltered signals: URLs, stores, niches, growth goals, product launches.</p>
         </div>
-        <div style="border-left: 3px solid var(--accent); padding-left: 1.25rem;">
-          <div style="font-size: 38px; font-weight: 700; letter-spacing: -.02em; line-height: 1;">50</div>
-          <div style="font-size: 12.5px; color: var(--text2-dark); margin-top: .35rem; font-weight: 500;">Avg active leads/search</div>
+        <div class="feat-card">
+          <div class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <h4>Active + store check</h4>
+          <p>Every lead, their website, has payments enabled, has inventory, and launched recently. "Active" means they're building right now.</p>
         </div>
-        <div style="border-left: 3px solid var(--accent); padding-left: 1.25rem;">
-          <div style="font-size: 38px; font-weight: 700; letter-spacing: -.02em; line-height: 1;">12s</div>
-          <div style="font-size: 12.5px; color: var(--text2-dark); margin-top: .35rem; font-weight: 500;">First lead returned</div>
-        </div>
-        <div style="border-left: 3px solid var(--accent); padding-left: 1.25rem;">
-          <div style="font-size: 38px; font-weight: 700; letter-spacing: -.02em; line-height: 1;">0</div>
-          <div style="font-size: 12.5px; color: var(--text2-dark); margin-top: .35rem; font-weight: 500;">Bounced emails ever</div>
+        <div class="feat-card">
+          <div class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></div>
+          <h4>One-click outreach</h4>
+          <p>Click and the lead is copied, ready to DM. CSV export for Apollo / Clay / Instantly.</p>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<section id="pricing" class="cream">
+<section id="how">
   <div class="container">
-    <div class="sec-h center" style="text-align:center; margin: 0 auto;">
-      <div class="eyebrow">// Pricing</div>
-      <h2>Start free. Pay if you keep finding wins.</h2>
-      <p>No credit card to start. Upgrade only when you've proved value.</p>
-    </div>
-    <div class="pricing-grid">
-      <div class="price-card">
-        <div class="pp">Free</div>
-        <h3>Starter</h3>
-        <div class="pr">$0<small> /forever</small></div>
-        <p class="desc">Try it before you buy. No card.</p>
-        <ul>
-          <li>5 searches</li>
-          <li>All engines (DDG + Brave)</li>
-          <li>Active-store verification</li>
-          <li>CSV export</li>
-        </ul>
-        <a href="/signup" class="btn btn-ghost btn-lg" style="width: 100%; justify-content: center;">Start free</a>
+    <div class="two-col">
+      <div>
+        <div class="eyebrow">// Made for operators</div>
+        <h2>Type a niche. Get DM-ready handles. That's it.</h2>
       </div>
-      <div class="price-card featured">
-        <div class="featured-tag">Coming soon</div>
-        <div class="pp">Pro</div>
-        <h3>Operator</h3>
-        <div class="pr">$29<small> /mo</small></div>
-        <p class="desc">For serious cold-outreach. Email aubrey for early-access pricing.</p>
-        <ul>
-          <li>Unlimited searches</li>
-          <li>Niche keyword packs</li>
-          <li>Saved searches + alerts</li>
-          <li>Bulk CSV export</li>
-          <li>Priority support</li>
-        </ul>
-        <a href="mailto:hi@shopifysift.app" class="btn btn-dark btn-lg" style="width: 100%; justify-content: center;">Email for early access</a>
+      <div class="step-grid">
+        <div class="feat-card step-card">
+          <div class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></div>
+          <h4>Pick a niche</h4>
+          <p>"Pick a niche" is optional. X is already public — we surface what's already out there.</p>
+        </div>
+        <div class="feat-card step-card">
+          <div class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg></div>
+          <h4>Check engine</h4>
+          <p>ShopifySift scans X bios for stores, niches, keywords, and buying intent signals.</p>
+        </div>
+        <div class="feat-card step-card">
+          <div class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg></div>
+          <h4>Verify live</h4>
+          <p>We verify the store is live and active so you don't waste a single outreach.</p>
+        </div>
+        <div class="feat-card step-card">
+          <div class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></div>
+          <h4>Copy and DM</h4>
+          <p>Grab verified leads and start conversations that convert.</p>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<section id="faq" class="cream">
+<section class="quotes-section">
   <div class="container">
-    <div class="sec-h">
-      <div class="eyebrow">FAQ</div>
-      <h2>Common questions.</h2>
-    </div>
-    <div class="faq-list">
-      <details class="faq-item">
-        <summary>How is this different from Apollo or Clay?</summary>
-        <p>Apollo and Clay sell you huge lists of B2B contacts pulled from LinkedIn, ZoomInfo, and other databases. We pull a much smaller list of X handles whose bios literally point at a Shopify store they built. Smaller list, but every lead has a real "in" for your DM. Conversion rates are typically 5-10× cold email.</p>
-      </details>
-      <details class="faq-item">
-        <summary>Where does the data come from?</summary>
-        <p>Public X (Twitter) bios indexed by DuckDuckGo and Brave Search. We dork search engines for X profiles whose bio text contains Shopify store URLs, then verify each store is real and actively selling. No private databases, no scraped accounts.</p>
-      </details>
-      <details class="faq-item">
-        <summary>Is this scraping? Is it legal?</summary>
-        <p>We don't scrape X directly — we query public search engine indexes that already contain public bio data. Operating within search engine ToS. What you do with the resulting handles (DMs, follows, etc.) follows X's user-facing rules.</p>
-      </details>
-      <details class="faq-item">
-        <summary>What does "active" actually mean?</summary>
-        <p>The store's <code>/products.json</code> endpoint returns at least one product, that product has a price greater than $0, and the catalog has been updated in the last 365 days. This filters out dev stores, abandoned catalogs, and password-gated stores.</p>
-      </details>
-      <details class="faq-item">
-        <summary>How many leads per search?</summary>
-        <p>Average is 30-80 active leads per niche keyword. Broader keywords + more keywords = more leads. A "skincare" + "fitness" + "coffee" + "candles" run typically pulls 150-250 active handles.</p>
-      </details>
-      <details class="faq-item">
-        <summary>Do you store the leads I find?</summary>
-        <p>We log search history (keywords + counts) for your dashboard, but we don't keep the actual lead handles or store URLs server-side. Export them to CSV right after a search to save them.</p>
-      </details>
+    <div class="eyebrow">// Loved by operators</div>
+    <h2>Operators replacing $300/mo lead tools.</h2>
+    <div class="quotes-grid">
+      <div class="quote-card">
+        <div class="stars">★★★★★</div>
+        <p class="q">"Cancelled Apollo after a week. The leads here are actually replying because the data is real. ShopifySift just works."</p>
+        <div class="who"><div class="avi">M</div><div><div class="nm">Marcus T.</div><div class="ttl">7-figure store owner</div></div></div>
+      </div>
+      <div class="quote-card">
+        <div class="stars">★★★★★</div>
+        <p class="q">"Used to spend 4 hours scraping LinkedIn for store founders. ShopifySift pulls 100 fresh leads and they all exist."</p>
+        <div class="who"><div class="avi">S</div><div><div class="nm">Sam L.</div><div class="ttl">DTC operator</div></div></div>
+      </div>
+      <div class="quote-card">
+        <div class="stars">★★★★★</div>
+        <p class="q">"The 'verified + active' filter is huge. I'm getting replies from operators, not dead accounts. It's like Clay on easy mode."</p>
+        <div class="who"><div class="avi">D</div><div><div class="nm">Devin R.</div><div class="ttl">E-commerce builder</div></div></div>
+      </div>
     </div>
   </div>
 </section>
 
 <section>
   <div class="container">
-    <div class="final" style="text-align: left; padding: 4rem;">
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;">
+    <div class="two-col">
+      <div>
+        <div class="eyebrow">// We sift X so you don't waste a single DM.</div>
+        <h2>Stop sending DMs into the void.</h2>
+        <p>Apollo shows you 50,000+ names. Half bounce, the rest ghost. ShopifySift finds the operators who are building right now.</p>
+      </div>
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap: .85rem;">
+        <div class="feat-card" style="padding: 1.25rem;">
+          <div class="icon" style="margin-bottom: .65rem;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></div>
+          <div style="font-size: 28px; font-weight: 700; color: var(--accent); letter-spacing: -.02em; line-height: 1;">14k+</div>
+          <div style="font-size: 12px; color: var(--text2); margin-top: .35rem;">Leads discovered</div>
+        </div>
+        <div class="feat-card" style="padding: 1.25rem;">
+          <div class="icon" style="margin-bottom: .65rem;"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+          <div style="font-size: 28px; font-weight: 700; color: var(--accent); letter-spacing: -.02em; line-height: 1;">50</div>
+          <div style="font-size: 12px; color: var(--text2); margin-top: .35rem;">Avg active leads / search</div>
+        </div>
+        <div class="feat-card" style="padding: 1.25rem;">
+          <div class="icon" style="margin-bottom: .65rem;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+          <div style="font-size: 28px; font-weight: 700; color: var(--accent); letter-spacing: -.02em; line-height: 1;">12s</div>
+          <div style="font-size: 12px; color: var(--text2); margin-top: .35rem;">First lead in your inbox</div>
+        </div>
+        <div class="feat-card" style="padding: 1.25rem;">
+          <div class="icon" style="margin-bottom: .65rem;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          <div style="font-size: 28px; font-weight: 700; color: var(--accent); letter-spacing: -.02em; line-height: 1;">0</div>
+          <div style="font-size: 12px; color: var(--text2); margin-top: .35rem;">Bounced emails ever</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="pricing" class="pricing-section">
+  <div class="container">
+    <div class="eyebrow">// Pricing</div>
+    <h2>Start free. Upgrade when you're winning.</h2>
+    <div class="plans">
+      <div class="plan">
+        <div class="plan-tag">Free</div>
+        <h3>Starter</h3>
+        <div class="pr">$0<small> /month</small></div>
+        <p class="desc">Try it. Test the leads. No card.</p>
+        <ul>
+          <li>5 searches</li>
+          <li>All results (100 per search)</li>
+          <li>Active + store verified</li>
+          <li>CSV export</li>
+        </ul>
+        <a href="/signup" class="plan-btn ghost">Start for free</a>
+      </div>
+      <div class="plan featured">
+        <div class="plan-tag">Popular</div>
+        <h3>Operator</h3>
+        <div class="pr">$29<small> /month</small></div>
+        <p class="desc">For serious cash-generators. Extra scale, more power.</p>
+        <ul>
+          <li>Unlimited searches</li>
+          <li>Active sustains pipeline</li>
+          <li>Saved searches</li>
+          <li>Bulk CSV export</li>
+          <li>Priority support</li>
+        </ul>
+        <a href="/pricing" class="plan-btn fill">Start 7-day free trial</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="container">
+    <div class="faq-section">
+      <div class="head">
+        <div class="eyebrow">// FAQ</div>
+        <h2>Common questions.</h2>
+      </div>
+      <div class="faq-list">
+        <details class="faq-item">
+          <summary>How is this different from Apollo or Clay?</summary>
+          <p>Apollo and Clay sell huge lists of B2B contacts pulled from LinkedIn and ZoomInfo. We pull a smaller list of X handles whose bios literally point at a Shopify store they built. Smaller list, but every lead has a real "in" for your DM. Conversion is typically 5-10× cold email.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Where does the data come from?</summary>
+          <p>Public X (Twitter) bios indexed by DuckDuckGo and Brave Search. We dork search engines for X profiles whose bio text contains Shopify store URLs, then verify each store is real and actively selling. No private databases, no scraped accounts.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Is this scraping? Is it legal?</summary>
+          <p>We don't scrape X directly — we query public search engine indexes that already contain public bio data. Operating within search engine ToS. What you do with the resulting handles (DMs, follows, etc.) follows X's user-facing rules.</p>
+        </details>
+        <details class="faq-item">
+          <summary>What does "active" actually mean?</summary>
+          <p>The store's <code>/products.json</code> endpoint returns at least one product, that product has a price greater than $0, and the catalog has been updated in the last 365 days. This filters out dev stores, abandoned catalogs, and password-gated stores.</p>
+        </details>
+        <details class="faq-item">
+          <summary>How many leads per search?</summary>
+          <p>Average is 30-80 active leads per niche keyword. Broader keywords + more keywords = more leads. A "skincare" + "fitness" + "coffee" + "candles" run typically pulls 150-250 active handles.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Do you store the leads I find?</summary>
+          <p>We log search history (keywords + counts) for your dashboard, but we don't keep the actual lead handles or store URLs server-side. Export them to CSV right after a search to save them.</p>
+        </details>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-card">
+      <div class="cta-grid">
         <div>
-          <div class="eyebrow" style="color: var(--accent); font-weight: 600;">// Get started</div>
-          <h2 style="font-size: clamp(32px, 4vw, 44px); line-height: 1.05; margin: .5rem 0 1rem;">Sift your first niche.<br>In about 12 seconds.</h2>
-          <p style="margin: 0 0 1.5rem;">5 free searches. No credit card. No "schedule a demo" wall. Just type a niche and watch verified Shopify handles stream in.</p>
-          <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: .55rem; font-size: 14px;">
-            <li style="display: flex; gap: .55rem; align-items: center; color: var(--text2);"><span style="color: var(--accent); font-weight: 700;">✓</span> No credit card required</li>
-            <li style="display: flex; gap: .55rem; align-items: center; color: var(--text2);"><span style="color: var(--accent); font-weight: 700;">✓</span> Instant access — sign up with email only</li>
-            <li style="display: flex; gap: .55rem; align-items: center; color: var(--text2);"><span style="color: var(--accent); font-weight: 700;">✓</span> Cancel any time (or never — free tier is forever)</li>
+          <div class="eyebrow">// Get started</div>
+          <h2>Sift your first niche.<br>In about 12 seconds.</h2>
+          <ul class="cta-checks">
+            <li>5 free searches. No credit card.</li>
+            <li>No tutorials. Just type a niche and watch Shopify-handled bios stream in.</li>
+            <li>No setup. No learning curve.</li>
+            <li>Cancel anytime. Come back anytime.</li>
           </ul>
         </div>
-        <form action="/signup" method="post" style="background: rgba(0,0,0,.35); border: 1px solid var(--line); border-radius: 12px; padding: 2rem;">
-          <div style="font-family: 'Geist Mono', monospace; font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: .08em; margin-bottom: .85rem; font-weight: 600;">Get instant access</div>
-          <h3 style="margin: 0 0 1.25rem; font-size: 22px;">Start sifting →</h3>
-          <label style="display: block; font-size: 11px; color: var(--text2); margin-bottom: .35rem; text-transform: uppercase; letter-spacing: .06em; font-weight: 600;">Email</label>
-          <input type="email" name="email" required placeholder="founder@yourstore.com"
-            style="width: 100%; background: rgba(0,0,0,.4); color: var(--text); border: 1px solid var(--line); border-radius: 8px; padding: .85rem 1rem; font: inherit; font-size: 14.5px; margin-bottom: 1rem;">
-          <button type="submit" style="width: 100%; background: var(--accent); color: #fff; border: 0; border-radius: 8px; padding: .9rem; font: inherit; font-weight: 700; font-size: 15px; cursor: pointer;">
-            Start free →
-          </button>
-          <p style="margin: 1rem 0 0; font-size: 11.5px; color: var(--text2); text-align: center;">5 free searches · no card · 30-second signup</p>
-        </form>
+        <div class="form-card">
+          <div class="lbl">Get instant access</div>
+          <h3>Start sifting →</h3>
+          <form action="/signup" method="post">
+            <label>Your email address</label>
+            <input type="email" name="email" required placeholder="founder@yourstore.com">
+            <button type="submit">Start free →</button>
+            <div class="meta-line">No credit card · Free forever</div>
+          </form>
+        </div>
       </div>
     </div>
   </div>
@@ -929,18 +915,15 @@ LANDING_PAGE = r"""<!doctype html>
   <div class="container">
     <div class="f-grid">
       <div>
-        <div class="brand-mark" style="margin-bottom: .75rem;">
-          <svg viewBox="0 0 32 32" fill="none">
-            <rect width="32" height="32" rx="7" fill="#0a0a0a"/>
-            <path d="M8 8 L24 24" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/>
-            <path d="M24 8 L8 24" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/>
-            <circle cx="16" cy="16" r="3.4" fill="#f97316"/>
-          </svg>
+        <a href="/" class="brand-mark">
+          <span class="x">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </span>
           ShopifySift
-        </div>
-        <p style="font-size: 13px; color: var(--text2); max-width: 260px; line-height: 1.55;">
-          Active Shopify stores hiding in X bios. Built for operators doing cold outreach.
-        </p>
+        </a>
+        <p class="blurb">Real Shopify leads hiding in X bios. For operators doing cold outreach.</p>
       </div>
       <div>
         <h5>Product</h5>
@@ -948,14 +931,15 @@ LANDING_PAGE = r"""<!doctype html>
           <li><a href="#features">Features</a></li>
           <li><a href="#how">How it works</a></li>
           <li><a href="#pricing">Pricing</a></li>
-          <li><a href="/signup">Sign up</a></li>
+          <li><a href="#">Updates</a></li>
         </ul>
       </div>
       <div>
         <h5>Company</h5>
         <ul>
+          <li><a href="#">About</a></li>
           <li><a href="mailto:hi@shopifysift.app">Contact</a></li>
-          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#">Blog</a></li>
         </ul>
       </div>
       <div>
@@ -968,7 +952,11 @@ LANDING_PAGE = r"""<!doctype html>
     </div>
     <div class="f-bottom">
       <span>© 2026 ShopifySift. All rights reserved.</span>
-      <span>Made for operators, not list-makers.</span>
+      <div class="f-social">
+        <a href="#" aria-label="X"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+        <a href="#" aria-label="Discord"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg></a>
+        <a href="mailto:hi@shopifysift.app" aria-label="Email"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></a>
+      </div>
     </div>
   </div>
 </footer>
