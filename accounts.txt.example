@@ -1,0 +1,7 @@
+# Throwaway X accounts for twscrape.
+# One per line, space-separated: username password email email_password
+# Example:
+# burner_acct_42 sup3rs3cret burner42@protonmail.com mailpass123
+#
+# Then rename this file to accounts.txt and run:
+#   python x_scraper.py -k klaviyo "dtc founder" "shopify checkout"

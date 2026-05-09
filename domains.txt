@@ -1,0 +1,7 @@
+# One domain per line. Lines starting with # are ignored.
+# Replace these examples with your own list (Apollo export, StoreLeads, etc.)
+allbirds.com
+gymshark.com
+fashionnova.com
+apple.com
+nytimes.com

@@ -1,0 +1,4 @@
+requests>=2.31
+flask>=3.0
+twscrape>=0.17
+ddgs>=9.0
