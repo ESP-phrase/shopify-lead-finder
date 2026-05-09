@@ -8,6 +8,7 @@ import os
 import queue
 import re
 import secrets
+import sys
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -1039,31 +1040,23 @@ AUTH_PAGE = r"""<!doctype html>
 </html>
 """
 
-DASHBOARD_PAGE = r"""<!doctype html>
+APP_SHELL = r"""<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Dashboard · ShopifySift</title>
+<title>{{ page_title }} · ShopifySift</title>
 <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap">
 <style>
   :root {
-    --bg: #0b0b0d;
-    --bg-card: #131316;
-    --sidebar: #0e0e11;
-    --text: #fafafa;
-    --text2: #a3a3a3;
-    --muted: #6b6b70;
-    --line: rgba(255,255,255,.06);
-    --line-strong: rgba(255,255,255,.12);
-    --accent: #ff7a3c;
-    --accent-soft: rgba(255,122,60,.14);
-    --orange: #ff7a3c;
-    --blue: #38bdf8;
-    --pink: #ec4899;
-    --purple: #a78bfa;
+    --bg: #0b0b0d; --bg-card: #131316; --sidebar: #0e0e11;
+    --text: #fafafa; --text2: #a3a3a3; --muted: #6b6b70;
+    --line: rgba(255,255,255,.06); --line-strong: rgba(255,255,255,.12);
+    --accent: #ff7a3c; --accent-soft: rgba(255,122,60,.14);
+    --orange: #ff7a3c; --blue: #38bdf8; --pink: #ec4899; --purple: #a78bfa;
+    --green: #4ade80; --red: #f87171;
     color-scheme: dark;
   }
   * { box-sizing: border-box; }
@@ -1074,10 +1067,7 @@ DASHBOARD_PAGE = r"""<!doctype html>
     font-size: 14px; line-height: 1.55; -webkit-font-smoothing: antialiased;
   }
   a { color: inherit; text-decoration: none; }
-
   .layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
-
-  /* SIDEBAR */
   aside.sidebar {
     background: var(--sidebar); border-right: 1px solid var(--line);
     display: flex; flex-direction: column; padding: 1.5rem 1rem 1rem;
@@ -1086,14 +1076,8 @@ DASHBOARD_PAGE = r"""<!doctype html>
     display: flex; align-items: center; gap: .55rem;
     padding: .25rem .75rem 1.5rem;
   }
-  .side-brand .x-mark {
-    width: 28px; height: 28px; position: relative;
-  }
-  .side-brand .x-mark svg {
-    width: 100%; height: 100%; color: var(--accent);
-  }
+  .side-brand .x-mark { width: 28px; height: 28px; color: var(--accent); }
   .side-brand .name { font-size: 16px; font-weight: 600; letter-spacing: -.01em; }
-
   .side-nav { display: flex; flex-direction: column; gap: .15rem; }
   .side-nav a {
     display: flex; align-items: center; gap: .75rem;
@@ -1110,14 +1094,10 @@ DASHBOARD_PAGE = r"""<!doctype html>
     width: 3px; background: var(--accent); border-radius: 0 2px 2px 0;
   }
   .side-nav a svg { width: 18px; height: 18px; opacity: .9; flex-shrink: 0; }
-
   .side-spacer { flex: 1; min-height: 1.5rem; }
-
   .credit-widget {
-    background: linear-gradient(180deg, rgba(255,122,60,.06), transparent),
-                var(--bg-card);
-    border: 1px solid var(--line);
-    border-radius: 12px; padding: 1.1rem 1.15rem;
+    background: linear-gradient(180deg, rgba(255,122,60,.06), transparent), var(--bg-card);
+    border: 1px solid var(--line); border-radius: 12px; padding: 1.1rem 1.15rem;
     margin-bottom: .65rem;
   }
   .credit-widget .top {
@@ -1130,12 +1110,11 @@ DASHBOARD_PAGE = r"""<!doctype html>
   .credit-widget .bolt { color: var(--accent); opacity: .85; }
   .credit-widget .lbl { font-size: 12.5px; color: var(--text2); margin-bottom: .65rem; }
   .credit-widget .progress {
-    height: 4px; background: rgba(255,255,255,.08); border-radius: 2px; overflow: hidden;
-    margin-bottom: 1rem;
+    height: 4px; background: rgba(255,255,255,.08); border-radius: 2px;
+    overflow: hidden; margin-bottom: 1rem;
   }
   .credit-widget .progress > span {
     display: block; height: 100%; background: var(--accent); border-radius: 2px;
-    transition: width .3s;
   }
   .credit-widget .ctxt { padding-top: .55rem; border-top: 1px solid var(--line); }
   .credit-widget .ctxt .head { font-size: 12.5px; font-weight: 600; margin-bottom: .25rem; }
@@ -1145,38 +1124,29 @@ DASHBOARD_PAGE = r"""<!doctype html>
     background: var(--accent); color: #fff; border-radius: 7px; transition: all .12s;
   }
   .credit-widget a.upgrade:hover { background: #ff8b4f; }
-
   .side-logout {
     display: flex; align-items: center; gap: .75rem;
     padding: .65rem .85rem; border-radius: 8px;
     color: var(--text2); font-size: 14px; font-weight: 500;
     border-top: 1px solid var(--line); margin-top: .25rem; padding-top: 1rem;
-    transition: all .12s;
   }
   .side-logout:hover { color: var(--text); }
   .side-logout svg { width: 18px; height: 18px; opacity: .9; }
 
-  /* MAIN */
   main.main { padding: 1.25rem 2rem 4rem; min-width: 0; position: relative; }
-
-  /* sunset glow background */
   main.main::before {
     content: ''; position: absolute; right: 0; top: 0;
     width: 600px; height: 500px; pointer-events: none;
     background:
-      radial-gradient(ellipse 400px 200px at 90% 30%, rgba(255,122,60,.18), transparent 60%),
-      radial-gradient(circle 200px at 88% 28%, rgba(255,122,60,.1), transparent 70%);
+      radial-gradient(ellipse 400px 200px at 90% 30%, rgba(255,122,60,.18), transparent 60%);
     z-index: 0;
   }
   main.main > * { position: relative; z-index: 1; }
 
-  /* TOP BAR */
   header.topbar {
     display: flex; align-items: center; gap: 1rem; margin-bottom: 3rem;
   }
-  .topbar .search {
-    flex: 1; position: relative; max-width: 480px;
-  }
+  .topbar .search { flex: 1; position: relative; max-width: 480px; }
   .topbar .search input {
     width: 100%; background: rgba(255,255,255,.04);
     border: 1px solid var(--line); border-radius: 10px;
@@ -1196,8 +1166,7 @@ DASHBOARD_PAGE = r"""<!doctype html>
     font-size: 10.5px; font-weight: 500;
   }
   .topbar .pricing-link {
-    color: var(--text2); font-size: 14px; font-weight: 500;
-    padding: .5rem .9rem;
+    color: var(--text2); font-size: 14px; font-weight: 500; padding: .5rem .9rem;
   }
   .topbar .pricing-link:hover { color: var(--text); }
   .topbar .credit-pill {
@@ -1217,10 +1186,9 @@ DASHBOARD_PAGE = r"""<!doctype html>
     width: 30px; height: 30px; border-radius: 50%;
     background: linear-gradient(135deg, #ff7a3c, #fbbf24);
     color: #0a0a0a; display: grid; place-items: center;
-    font-weight: 700; font-size: 12.5px; letter-spacing: -.01em;
+    font-weight: 700; font-size: 12.5px;
   }
   .topbar .user-chip .chev { color: var(--text2); }
-  /* Dropdown menu */
   .topbar .user-chip .menu {
     position: absolute; top: calc(100% + .5rem); right: 0;
     background: var(--bg-card); border: 1px solid var(--line);
@@ -1231,31 +1199,65 @@ DASHBOARD_PAGE = r"""<!doctype html>
   .topbar .user-chip:hover .menu { display: block; }
   .topbar .user-chip .menu a {
     display: block; padding: .55rem .75rem; border-radius: 7px;
-    font-size: 13.5px; color: var(--text2); transition: all .12s;
+    font-size: 13.5px; color: var(--text2);
   }
   .topbar .user-chip .menu a:hover { background: rgba(255,255,255,.05); color: var(--text); }
 
-  /* PAGE TITLE */
   .page-eyebrow {
     font-family: 'Geist Mono', monospace; font-size: 12px;
     color: var(--accent); text-transform: uppercase; letter-spacing: .12em;
     font-weight: 600; margin-bottom: 1rem;
   }
   .page-title {
-    font-size: clamp(40px, 5vw, 56px); font-weight: 600;
+    font-size: clamp(36px, 5vw, 52px); font-weight: 600;
     letter-spacing: -.025em; line-height: 1; margin: 0 0 .85rem;
   }
   .page-meta { color: var(--text2); font-size: 14px; margin: 0 0 3rem; }
 
-  /* STAT CARDS */
+  /* shared cards */
+  .panel {
+    background: var(--bg-card); border: 1px solid var(--line);
+    border-radius: 14px; padding: 1.75rem;
+  }
+  .panel h2 {
+    font-size: 18px; margin: 0 0 .35rem; font-weight: 600; letter-spacing: -.01em;
+  }
+  .panel p.sub { color: var(--text2); font-size: 13.5px; margin: 0 0 1.5rem; }
+
+  table.t {
+    width: 100%; background: var(--bg-card); border: 1px solid var(--line);
+    border-radius: 12px; border-collapse: separate; border-spacing: 0;
+    overflow: hidden; font-size: 13.5px;
+  }
+  table.t th, table.t td { padding: .85rem 1.1rem; text-align: left; }
+  table.t th {
+    background: rgba(255,255,255,.02); color: var(--text2);
+    font-family: 'Geist Mono', monospace; font-size: 11px;
+    text-transform: uppercase; letter-spacing: .08em; font-weight: 600;
+  }
+  table.t tr + tr td { border-top: 1px solid var(--line); }
+  table.t td.kw { color: var(--text); font-weight: 500; }
+  table.t td .num-active { color: var(--green); font-weight: 600; }
+
+  .empty-card {
+    background: var(--bg-card); border: 1px dashed var(--line-strong);
+    border-radius: 14px; padding: 4rem 2rem; text-align: center;
+  }
+  .empty-card .ico {
+    width: 48px; height: 48px; margin: 0 auto 1.25rem;
+    border-radius: 50%; background: rgba(255,255,255,.04);
+    display: grid; place-items: center; color: var(--text2);
+  }
+  .empty-card p { font-size: 16px; color: var(--text); font-weight: 500; margin: 0 0 .75rem; }
+  .empty-card a.cta { color: var(--accent); font-size: 14px; font-weight: 500; }
+  .empty-card a.cta:hover { text-decoration: underline; }
+
   .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
   @media (max-width: 1100px) { .stats { grid-template-columns: repeat(2, 1fr); } }
   .stat-card {
     background: var(--bg-card); border: 1px solid var(--line);
     border-radius: 14px; padding: 1.6rem 1.6rem 1.4rem;
-    transition: border-color .12s;
   }
-  .stat-card:hover { border-color: var(--line-strong); }
   .stat-card.featured { border-color: rgba(255,122,60,.4); background: linear-gradient(180deg, rgba(255,122,60,.06), transparent 70%), var(--bg-card); }
   .stat-card .ico {
     width: 44px; height: 44px; border-radius: 50%;
@@ -1273,58 +1275,42 @@ DASHBOARD_PAGE = r"""<!doctype html>
     font-weight: 500; margin-top: 1rem;
   }
 
-  /* ACTION BUTTONS ROW */
   .actions { display: flex; gap: .65rem; flex-wrap: wrap; margin-bottom: 3rem; }
   .actions a {
     padding: .8rem 1.4rem; border-radius: 9px; font-size: 14px; font-weight: 600;
     display: inline-flex; align-items: center; gap: .4rem; transition: all .12s;
   }
   .actions .btn-primary { background: var(--accent); color: #fff; }
-  .actions .btn-primary:hover { background: #ff8b4f; transform: translateY(-1px); }
+  .actions .btn-primary:hover { background: #ff8b4f; }
   .actions .btn-ghost {
     background: var(--bg-card); border: 1px solid var(--line); color: var(--text);
   }
   .actions .btn-ghost:hover { border-color: var(--line-strong); }
 
-  /* SEARCH HISTORY SECTION */
-  .history-section .head {
-    font-family: 'Geist Mono', monospace; font-size: 12px;
-    color: var(--accent); text-transform: uppercase; letter-spacing: .12em;
-    font-weight: 600; margin-bottom: 1rem;
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .form-row.full { grid-template-columns: 1fr; }
+  .form-row label {
+    display: block; font-size: 11px; color: var(--text2); margin: 0 0 .35rem;
+    text-transform: uppercase; letter-spacing: .06em; font-weight: 600;
   }
-  .history-empty {
-    background: var(--bg-card); border: 1px dashed var(--line-strong);
-    border-radius: 14px; padding: 4rem 2rem; text-align: center;
+  .form-row input, .form-row select {
+    width: 100%; background: rgba(0,0,0,.3); color: var(--text);
+    border: 1px solid var(--line-strong); border-radius: 9px;
+    padding: .7rem .9rem; font: inherit; font-size: 14px;
   }
-  .history-empty .ico {
-    width: 48px; height: 48px; margin: 0 auto 1.25rem;
-    border-radius: 50%; background: rgba(255,255,255,.04);
-    display: grid; place-items: center; color: var(--text2);
-  }
-  .history-empty p {
-    font-size: 16px; color: var(--text); font-weight: 500;
-    margin: 0 0 .75rem;
-  }
-  .history-empty a.cta {
-    color: var(--accent); font-size: 14px; font-weight: 500;
-  }
-  .history-empty a.cta:hover { text-decoration: underline; }
+  .form-row input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(255,122,60,.12); }
+  .form-row input[disabled] { color: var(--muted); cursor: not-allowed; }
+  .panel + .panel { margin-top: 1rem; }
 
-  /* HISTORY TABLE */
-  table.hist {
-    width: 100%; background: var(--bg-card); border: 1px solid var(--line);
-    border-radius: 12px; border-collapse: separate; border-spacing: 0;
-    overflow: hidden; font-size: 13.5px;
+  .danger-card { border-color: rgba(248,113,113,.25); }
+  .danger-card h2 { color: var(--red); }
+  .btn-danger {
+    background: rgba(248,113,113,.14); color: var(--red);
+    border: 1px solid rgba(248,113,113,.3); padding: .65rem 1.2rem;
+    border-radius: 8px; font: inherit; font-size: 13.5px; font-weight: 600;
+    cursor: pointer; text-decoration: none; display: inline-block;
   }
-  table.hist th, table.hist td { padding: .85rem 1.1rem; text-align: left; }
-  table.hist th {
-    background: rgba(255,255,255,.02); color: var(--text2);
-    font-family: 'Geist Mono', monospace; font-size: 11px;
-    text-transform: uppercase; letter-spacing: .08em; font-weight: 600;
-  }
-  table.hist tr + tr td { border-top: 1px solid var(--line); }
-  table.hist td.kw { color: var(--text); font-weight: 500; }
-  table.hist td .num-active { color: #4ade80; font-weight: 600; }
+  .btn-danger:hover { background: rgba(248,113,113,.22); }
 
   @media (max-width: 900px) {
     .layout { grid-template-columns: 1fr; }
@@ -1339,67 +1325,60 @@ DASHBOARD_PAGE = r"""<!doctype html>
 {% endwith %}
 
 <div class="layout">
-
   <aside class="sidebar">
     <a href="/" class="side-brand">
       <span class="x-mark">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" width="100%" height="100%">
           <line x1="18" y1="6" x2="6" y2="18"/>
           <line x1="6" y1="6" x2="18" y2="18"/>
         </svg>
       </span>
       <span class="name">ShopifySift</span>
     </a>
-
     <nav class="side-nav">
-      <a href="/dashboard" class="active">
+      <a href="/dashboard" class="{{ 'active' if active=='dashboard' else '' }}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
         Dashboard
       </a>
-      <a href="/app/dork">
+      <a href="/app/dork" class="{{ 'active' if active=='search' else '' }}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
         Search
       </a>
-      <a href="/app/dork">
+      <a href="/app/leads" class="{{ 'active' if active=='leads' else '' }}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         Leads
       </a>
-      <a href="/dashboard">
+      <a href="/app/history" class="{{ 'active' if active=='history' else '' }}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         History
       </a>
-      <a href="/pricing">
+      <a href="/pricing" class="{{ 'active' if active=='credits' else '' }}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
         Credits
       </a>
-      <a href="/pricing">
+      <a href="/pricing" class="{{ 'active' if active=='pricing' else '' }}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41 13.42 20.58a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
         Pricing
       </a>
-      <a href="#">
+      <a href="/app/settings" class="{{ 'active' if active=='settings' else '' }}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
         Settings
       </a>
     </nav>
-
     <div class="side-spacer"></div>
-
     <div class="credit-widget">
       <div class="top">
         <div class="num">{{ user.credits }}</div>
-        <span class="bolt">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-        </span>
+        <span class="bolt"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
       </div>
       <div class="lbl">Credits remaining</div>
-      <div class="progress"><span style="width: {{ (user.credits|float / 100 * 100)|round|int if user.credits < 100 else 100 }}%"></span></div>
+      <div class="progress"><span style="width: {{ (user.credits / 100 * 100)|int if user.credits < 100 else 100 }}%"></span></div>
       <div class="ctxt">
         <div class="head">Need more credits?</div>
         <div class="sub">Get more searches and unlock more leads.</div>
         <a href="/pricing" class="upgrade">Upgrade now</a>
       </div>
     </div>
-
     <a href="/logout" class="side-logout">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
       Log out
@@ -1409,9 +1388,7 @@ DASHBOARD_PAGE = r"""<!doctype html>
   <main class="main">
     <header class="topbar">
       <div class="search">
-        <span class="ico-l">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-        </span>
+        <span class="ico-l"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
         <input type="text" placeholder="Search..." />
         <kbd>⌘K</kbd>
       </div>
@@ -1419,91 +1396,310 @@ DASHBOARD_PAGE = r"""<!doctype html>
       <span class="credit-pill">{{ user.credits }} credits</span>
       <div class="user-chip">
         <div class="avi">{{ (user.email or 'U')[:2]|upper }}</div>
-        <span class="chev">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-        </span>
+        <span class="chev"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span>
         <div class="menu">
           <a href="/dashboard">Dashboard</a>
           <a href="/app/dork">Search</a>
+          <a href="/app/settings">Settings</a>
           <a href="/pricing">Get more credits</a>
           <a href="/logout">Log out</a>
         </div>
       </div>
     </header>
 
-    <div class="page-eyebrow">// Dashboard</div>
-    <h1 class="page-title">Welcome back.</h1>
-    <p class="page-meta">{{ user.email }} · joined {{ user.created_at[:10] }}</p>
-
-    <section class="stats">
-      <div class="stat-card c-orange featured">
-        <div class="ico">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-        </div>
-        <div class="num">{{ user.credits }}</div>
-        <div class="lbl">Credits Remaining</div>
-      </div>
-      <div class="stat-card c-blue">
-        <div class="ico">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/><circle cx="14" cy="8" r="1.5" fill="currentColor"/></svg>
-        </div>
-        <div class="num">{{ stats.searches }}</div>
-        <div class="lbl">Searches Run</div>
-      </div>
-      <div class="stat-card c-pink">
-        <div class="ico">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>
-        </div>
-        <div class="num">{{ stats.total_active }}</div>
-        <div class="lbl">Active Leads Found</div>
-      </div>
-      <div class="stat-card c-purple">
-        <div class="ico">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 3v18h18"/><rect x="7" y="13" width="3" height="6" fill="currentColor" stroke="none"/><rect x="12" y="9" width="3" height="10" fill="currentColor" stroke="none"/><rect x="17" y="5" width="3" height="14" fill="currentColor" stroke="none"/></svg>
-        </div>
-        <div class="num">{{ stats.total_found }}</div>
-        <div class="lbl">Total Candidates</div>
-      </div>
-    </section>
-
-    <div class="actions">
-      <a href="/app/dork" class="btn-primary">Run a search →</a>
-      <a href="/pricing" class="btn-ghost">Get more credits</a>
-      <a href="/" class="btn-ghost">Back to home</a>
-    </div>
-
-    <section class="history-section">
-      <div class="head">// Search History</div>
-      {% if history %}
-        <table class="hist">
-          <thead><tr><th>When</th><th>Keywords</th><th>Engine</th><th>Active</th><th>Total</th></tr></thead>
-          <tbody>
-          {% for s in history %}
-            <tr>
-              <td style="color:var(--muted)">{{ s.created_at[:16] }}</td>
-              <td class="kw">{{ s.keywords or '(broad)' }}</td>
-              <td style="color:var(--muted)">{{ s.engine }}</td>
-              <td><span class="num-active">{{ s.active_leads }}</span></td>
-              <td>{{ s.leads_found }}</td>
-            </tr>
-          {% endfor %}
-          </tbody>
-        </table>
-      {% else %}
-        <div class="history-empty">
-          <div class="ico">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-          </div>
-          <p>No searches yet.</p>
-          <a class="cta" href="/app/dork">Run your first one →</a>
-        </div>
-      {% endif %}
-    </section>
+    {{ body|safe }}
   </main>
 </div>
 
 </body>
 </html>
+"""
+
+DASHBOARD_BODY = r"""
+<div class="page-eyebrow">// Dashboard</div>
+<h1 class="page-title">Welcome back.</h1>
+<p class="page-meta">{{ user.email }} · joined {{ user.created_at[:10] }}</p>
+
+<section class="stats">
+  <div class="stat-card c-orange featured">
+    <div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+    <div class="num">{{ user.credits }}</div>
+    <div class="lbl">Credits Remaining</div>
+  </div>
+  <div class="stat-card c-blue">
+    <div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></div>
+    <div class="num">{{ stats.searches }}</div>
+    <div class="lbl">Searches Run</div>
+  </div>
+  <div class="stat-card c-pink">
+    <div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg></div>
+    <div class="num">{{ stats.total_active }}</div>
+    <div class="lbl">Active Leads Found</div>
+  </div>
+  <div class="stat-card c-purple">
+    <div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 3v18h18"/><rect x="7" y="13" width="3" height="6" fill="currentColor" stroke="none"/><rect x="12" y="9" width="3" height="10" fill="currentColor" stroke="none"/><rect x="17" y="5" width="3" height="14" fill="currentColor" stroke="none"/></svg></div>
+    <div class="num">{{ stats.total_found }}</div>
+    <div class="lbl">Total Candidates</div>
+  </div>
+</section>
+
+<div class="actions">
+  <a href="/app/dork" class="btn-primary">Run a search →</a>
+  <a href="/pricing" class="btn-ghost">Get more credits</a>
+  <a href="/" class="btn-ghost">Back to home</a>
+</div>
+
+<div class="page-eyebrow" style="margin-top: 2rem;">// Recent searches</div>
+{% if history %}
+  <table class="t">
+    <thead><tr><th>When</th><th>Keywords</th><th>Engine</th><th>Active</th><th>Total</th></tr></thead>
+    <tbody>
+    {% for s in history[:5] %}
+      <tr>
+        <td style="color:var(--muted)">{{ s.created_at[:16] }}</td>
+        <td class="kw">{{ s.keywords or '(broad)' }}</td>
+        <td style="color:var(--muted)">{{ s.engine }}</td>
+        <td><span class="num-active">{{ s.active_leads }}</span></td>
+        <td>{{ s.leads_found }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <div class="empty-card">
+    <div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></div>
+    <p>No searches yet.</p>
+    <a class="cta" href="/app/dork">Run your first one →</a>
+  </div>
+{% endif %}
+"""
+
+LEADS_BODY = r"""
+<style>
+  .lead-row {
+    display: grid; grid-template-columns: auto 1fr auto; gap: 1rem; align-items: center;
+    padding: .85rem 1.1rem; background: var(--bg-card);
+    border: 1px solid var(--line); border-radius: 12px;
+    transition: border-color .15s;
+  }
+  .lead-row + .lead-row { margin-top: .55rem; }
+  .lead-row.active { border-left: 3px solid var(--green); }
+  .lead-row.dormant { opacity: .55; }
+  .lead-row:hover { border-color: var(--line-strong); }
+  .lead-row .avi {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), #fbbf24);
+    color: #0a0a0a; display: grid; place-items: center;
+    font-weight: 700; font-size: 14px; flex-shrink: 0;
+  }
+  .lead-row .top {
+    display: flex; gap: .5rem; align-items: center; flex-wrap: wrap; margin-bottom: .15rem;
+  }
+  .lead-row .h { font-weight: 600; color: var(--accent); font-size: 14.5px; }
+  .lead-row .h:hover { text-decoration: underline; }
+  .lead-row .badge {
+    font-family: 'Geist Mono', monospace; font-size: 10px;
+    padding: .15rem .5rem; border-radius: 999px;
+    text-transform: uppercase; letter-spacing: .05em; font-weight: 700;
+  }
+  .lead-row .badge.active { background: rgba(74,222,128,.14); color: var(--green); border: 1px solid rgba(74,222,128,.28); }
+  .lead-row .badge.dormant { background: rgba(255,255,255,.04); color: var(--muted); border: 1px solid var(--line); }
+  .lead-row .badge.newb { background: rgba(255,122,60,.14); color: var(--accent); border: 1px solid rgba(255,122,60,.28); }
+  .lead-row .badge.est { background: rgba(245,210,140,.14); color: #e8c181; border: 1px solid rgba(245,210,140,.28); }
+  .lead-row .bio { font-size: 12.5px; color: var(--text2); margin-top: .15rem; line-height: 1.5;
+    overflow: hidden; text-overflow: ellipsis; display: -webkit-box;
+    -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+  .lead-row .url { font: 11.5px ui-monospace, monospace; color: var(--muted); margin-top: .25rem; }
+  .lead-row .copy-btn {
+    background: rgba(255,255,255,.05); color: var(--muted); border: 1px solid var(--line);
+    border-radius: 6px; font-size: 11.5px; padding: .35rem .65rem; cursor: pointer;
+    font-family: inherit; transition: all .12s; flex-shrink: 0;
+  }
+  .lead-row .copy-btn:hover { color: var(--accent); border-color: rgba(255,122,60,.3); }
+  .lead-row .copy-btn.copied { color: var(--green); border-color: var(--green); }
+  .filter-pills {
+    display: inline-flex; gap: .25rem; padding: .25rem;
+    background: var(--bg-card); border: 1px solid var(--line);
+    border-radius: 999px; margin-bottom: 1.5rem;
+  }
+  .filter-pills button {
+    background: transparent; color: var(--text2); border: 0;
+    padding: .45rem .9rem; font: inherit; font-size: 12.5px; font-weight: 500;
+    border-radius: 999px; cursor: pointer; transition: all .15s;
+  }
+  .filter-pills button.on { background: rgba(255,255,255,.08); color: var(--text); }
+</style>
+
+<div class="page-eyebrow">// Leads</div>
+<h1 class="page-title">Your leads.</h1>
+<p class="page-meta">{{ stats.total_active }} active · {{ stats.total_found }} total candidates across {{ stats.searches }} search{{ '' if stats.searches == 1 else 'es' }}</p>
+
+<section class="stats">
+  <div class="stat-card c-pink featured">
+    <div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg></div>
+    <div class="num">{{ active_count }}</div>
+    <div class="lbl">Active (saved)</div>
+  </div>
+  <div class="stat-card c-purple">
+    <div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 3v18h18"/><rect x="7" y="13" width="3" height="6" fill="currentColor" stroke="none"/><rect x="12" y="9" width="3" height="10" fill="currentColor" stroke="none"/><rect x="17" y="5" width="3" height="14" fill="currentColor" stroke="none"/></svg></div>
+    <div class="num">{{ leads|length }}</div>
+    <div class="lbl">Total saved</div>
+  </div>
+  <div class="stat-card c-blue">
+    <div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></div>
+    <div class="num">{{ stats.searches }}</div>
+    <div class="lbl">Searches run</div>
+  </div>
+  <div class="stat-card c-orange">
+    <div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+    <div class="num">{{ user.credits }}</div>
+    <div class="lbl">Credits left</div>
+  </div>
+</section>
+
+{% if leads %}
+  <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem; flex-wrap: wrap;">
+    <div class="filter-pills" id="leadPills">
+      <button type="button" class="on" data-filter="active">Active ({{ active_count }})</button>
+      <button type="button" data-filter="all">All ({{ leads|length }})</button>
+    </div>
+    <button id="copyAllBtn" class="btn-ghost" style="font-size: 13px; padding: .5rem 1rem; border-radius: 8px; cursor: pointer; background: var(--bg-card); border: 1px solid var(--line); color: var(--text);">Copy all visible @handles</button>
+    <a href="/app/dork" class="btn-primary" style="margin-left: auto; padding: .5rem 1rem; border-radius: 8px; font-size: 13px; font-weight: 600; color: #fff; background: var(--accent); text-decoration: none;">Run a new search →</a>
+  </div>
+  <div id="leadsList">
+    {% for ld in leads %}
+      <div class="lead-row {{ 'active' if ld.is_active else 'dormant' }}"
+           data-active="{{ '1' if ld.is_active else '0' }}"
+           data-text="{{ (ld.username + ' ' + (ld.bio_snippet or ''))|lower }}">
+        <div class="avi">{{ (ld.username or '?')[:1]|upper }}</div>
+        <div>
+          <div class="top">
+            <a class="h" href="{{ ld.x_profile or 'https://x.com/' + ld.username }}" target="_blank" rel="noopener">@{{ ld.username }}</a>
+            <button class="copy-btn" data-copy="@{{ ld.username }}">copy</button>
+            {% if ld.is_active %}
+              <span class="badge active">● active</span>
+            {% elif ld.is_shopify %}
+              <span class="badge dormant">{{ ld.active_reason or 'dormant' }}</span>
+            {% endif %}
+            {% if ld.category %}
+              <span class="badge {{ 'newb' if ld.category == 'newb' else 'est' }}">{{ ld.category }}</span>
+            {% endif %}
+          </div>
+          <div class="bio">{{ ld.bio_snippet }}</div>
+          {% if ld.shopify_url %}
+            <div class="url"><a href="{{ ld.shopify_url }}" target="_blank" rel="noopener" style="color:inherit;">{{ ld.shopify_url }}</a></div>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <script>
+    document.querySelectorAll('.lead-row .copy-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        navigator.clipboard.writeText(btn.dataset.copy);
+        btn.classList.add('copied'); btn.textContent = 'copied';
+        setTimeout(() => { btn.classList.remove('copied'); btn.textContent = 'copy'; }, 1100);
+      });
+    });
+    document.getElementById('leadPills').addEventListener('click', e => {
+      if (e.target.tagName !== 'BUTTON') return;
+      document.querySelectorAll('#leadPills button').forEach(b => b.classList.remove('on'));
+      e.target.classList.add('on');
+      const filter = e.target.dataset.filter;
+      document.querySelectorAll('#leadsList .lead-row').forEach(r => {
+        const a = r.dataset.active === '1';
+        r.style.display = (filter === 'all' || (filter === 'active' && a)) ? '' : 'none';
+      });
+    });
+    document.getElementById('copyAllBtn').addEventListener('click', () => {
+      const visible = [...document.querySelectorAll('#leadsList .lead-row')].filter(r => r.style.display !== 'none');
+      const handles = visible.map(r => '@' + r.dataset.text.split(' ')[0]).join('\n');
+      navigator.clipboard.writeText(handles);
+      const btn = document.getElementById('copyAllBtn');
+      const orig = btn.textContent;
+      btn.textContent = `Copied ${visible.length} handles ✓`;
+      setTimeout(() => btn.textContent = orig, 1300);
+    });
+  </script>
+{% else %}
+  <div class="empty-card">
+    <div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+    <p>No leads yet.</p>
+    <p style="font-size: 13px; color: var(--text2); font-weight: 400; margin: .25rem 0 1rem;">Run a search and verified leads will appear here automatically — they're now saved across tabs.</p>
+    <a class="cta" href="/app/dork">Run your first search →</a>
+  </div>
+{% endif %}
+"""
+
+HISTORY_BODY = r"""
+<div class="page-eyebrow">// Search history</div>
+<h1 class="page-title">Search history.</h1>
+<p class="page-meta">Every search you've run on this account</p>
+
+{% if history %}
+  <table class="t">
+    <thead><tr><th>When</th><th>Keywords</th><th>Engine</th><th>Broad</th><th>Active</th><th>Total</th></tr></thead>
+    <tbody>
+    {% for s in history %}
+      <tr>
+        <td style="color:var(--muted)">{{ s.created_at[:16] }}</td>
+        <td class="kw">{{ s.keywords or '(broad)' }}</td>
+        <td style="color:var(--muted)">{{ s.engine }}</td>
+        <td style="color:var(--muted)">{{ 'yes' if s.broad else 'no' }}</td>
+        <td><span class="num-active">{{ s.active_leads }}</span></td>
+        <td>{{ s.leads_found }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <div class="empty-card">
+    <div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+    <p>No searches yet.</p>
+    <a class="cta" href="/app/dork">Run your first one →</a>
+  </div>
+{% endif %}
+"""
+
+SETTINGS_BODY = r"""
+<div class="page-eyebrow">// Settings</div>
+<h1 class="page-title">Account settings.</h1>
+<p class="page-meta">Manage your account and preferences</p>
+
+<div class="panel">
+  <h2>Account</h2>
+  <p class="sub">Your basic info. Email is your unique identifier.</p>
+  <div class="form-row full" style="margin-bottom: 1rem;">
+    <label>Email</label>
+    <input type="email" value="{{ user.email }}" disabled>
+  </div>
+  <div class="form-row">
+    <div>
+      <label>Member since</label>
+      <input type="text" value="{{ user.created_at[:10] }}" disabled>
+    </div>
+    <div>
+      <label>User ID</label>
+      <input type="text" value="#{{ user.id }}" disabled>
+    </div>
+  </div>
+</div>
+
+<div class="panel">
+  <h2>Plan & credits</h2>
+  <p class="sub">{{ user.credits }} credits remaining on the {{ user.plan|capitalize }} plan.</p>
+  <div class="actions" style="margin: 0;">
+    <a href="/pricing" class="btn-primary">Get more credits</a>
+    <a href="/app/history" class="btn-ghost">Usage history</a>
+  </div>
+</div>
+
+<div class="panel danger-card">
+  <h2>Danger zone</h2>
+  <p class="sub">Sign out of this device. To delete your account, email <a href="mailto:hi@shopifysift.app" style="color:var(--accent);">hi@shopifysift.app</a>.</p>
+  <a href="/logout" class="btn-danger">Log out</a>
+</div>
 """
 
 PRICING_PAGE = r"""<!doctype html>
@@ -2929,15 +3125,47 @@ def logout():
     return redirect(url_for("landing"))
 
 
+def _render_app(active, page_title, body_template, **ctx):
+    user = current_user()
+    body_html = render_template_string(body_template, user=user, **ctx)
+    return render_template_string(
+        APP_SHELL, user=user, active=active, page_title=page_title, body=body_html,
+    )
+
+
 @app.route("/dashboard")
 @require_login
 def dashboard():
     user = current_user()
     stats = db.user_stats(user["id"])
     history = db.get_recent_searches(user["id"], limit=20)
-    return render_template_string(
-        DASHBOARD_PAGE, user=user, stats=stats, history=history,
-    )
+    return _render_app("dashboard", "Dashboard", DASHBOARD_BODY,
+                       stats=stats, history=history)
+
+
+@app.route("/app/leads")
+@require_login
+def leads_page():
+    user = current_user()
+    stats = db.user_stats(user["id"])
+    leads = db.get_recent_user_leads(user["id"], limit=500)
+    active_count = sum(1 for l in leads if l.get("is_active"))
+    return _render_app("leads", "Leads", LEADS_BODY,
+                       stats=stats, leads=leads, active_count=active_count)
+
+
+@app.route("/app/history")
+@require_login
+def history_page():
+    user = current_user()
+    history = db.get_recent_searches(user["id"], limit=200)
+    return _render_app("history", "History", HISTORY_BODY, history=history)
+
+
+@app.route("/app/settings")
+@require_login
+def settings_page():
+    return _render_app("settings", "Settings", SETTINGS_BODY)
 
 
 @app.route("/pricing")
@@ -3151,7 +3379,7 @@ def dork_stream():
         q.put((event_type, payload))
 
     def runner():
-        verify_pool = ThreadPoolExecutor(max_workers=24)
+        verify_pool = ThreadPoolExecutor(max_workers=128)
         seen_users: set = set()
         verify_count = {"submitted": 0, "done": 0, "active": 0}
 
@@ -3177,6 +3405,11 @@ def dork_stream():
                 verify_count["done"] += 1
                 if row.get("active"):
                     verify_count["active"] += 1
+                # Persist lead so it's not lost if the user closes the tab
+                try:
+                    db.add_search_lead(search_id, user["id"], row)
+                except Exception as ex:
+                    print(f"DB persist error: {ex}", file=sys.stderr)
                 q.put(("lead", {
                     "row": row,
                     "done": verify_count["done"],
@@ -3204,10 +3437,15 @@ def dork_stream():
                 leads_found=verify_count["done"],
                 active_leads=verify_count["active"],
             )
+            db.update_search_status(search_id, user["id"], "done")
             push("done", elapsed=time.time() - t0)
         except Exception as e:
             push("error", msg=f"{type(e).__name__}: {e}")
             verify_pool.shutdown(wait=False, cancel_futures=True)
+            try:
+                db.update_search_status(search_id, user["id"], "error")
+            except Exception:
+                pass
         finally:
             q.put(None)
 

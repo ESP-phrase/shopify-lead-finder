@@ -13,8 +13,9 @@ import csv
 import os
 import re
 import sys
+import threading
 import time
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -40,8 +41,57 @@ _load_env()
 PROXY_URL = os.environ.get("PROXY_URL")
 BRAVE_API_KEY = os.environ.get("BRAVE_API_KEY")
 
-if PROXY_URL:
-    SESSION.proxies = {"http": PROXY_URL, "https": PROXY_URL}
+
+# Proxy pool — load 500 sticky-session endpoints from proxies.txt
+def _load_proxy_pool() -> list[str]:
+    f = Path(__file__).with_name("proxies.txt")
+    if not f.exists():
+        return [PROXY_URL] if PROXY_URL else []
+    out = []
+    from urllib.parse import quote
+    for line in f.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#"):
+            continue
+        # Encode the username portion (which has ; , : characters in the geo string)
+        # Format: user:pass@host:port
+        if "@" in line and "://" not in line:
+            creds, host = line.rsplit("@", 1)
+            user, pw = creds.split(":", 1) if ":" in creds else (creds, "")
+            # Re-encode username for safe URL form
+            url = f"http://{quote(user, safe='')}:{quote(pw, safe='')}@{host}"
+            out.append(url)
+        else:
+            out.append(line if line.startswith("http") else f"http://{line}")
+    return out
+
+
+import random as _random
+PROXY_POOL = _load_proxy_pool()
+
+
+def get_random_proxy() -> str | None:
+    """Pick a random proxy from the pool. Falls back to PROXY_URL or None."""
+    if PROXY_POOL:
+        return _random.choice(PROXY_POOL)
+    return PROXY_URL
+
+
+def get_proxies_dict() -> dict | None:
+    p = get_random_proxy()
+    return {"http": p, "https": p} if p else None
+
+if PROXY_POOL or PROXY_URL:
+    # Patch SESSION.request to pick a fresh proxy per call
+    _orig_request = SESSION.request
+
+    def _request_with_pool(method, url, **kwargs):
+        if "proxies" not in kwargs:
+            kwargs["proxies"] = get_proxies_dict()
+        return _orig_request(method, url, **kwargs)
+
+    SESSION.request = _request_with_pool
+    print(f"[proxy] pool loaded: {len(PROXY_POOL)} sticky-session endpoints", file=sys.stderr)
 
 
 _BRAVE_LAST_REQ = 0.0
@@ -73,6 +123,7 @@ def _brave_search(query: str, count: int) -> list[dict]:
         r = requests.get(
             "https://api.search.brave.com/res/v1/web/search",
             params=params, headers=headers, timeout=20,
+            proxies=get_proxies_dict(),
         )
     except requests.RequestException as e:
         raise RuntimeError(f"brave http error: {e}") from None
@@ -308,6 +359,7 @@ def search_dorks(
     engine: str = "ddg",
     on_log=None,
     on_candidate=None,
+    parallel: int = 8,
 ) -> dict[str, dict]:
     """Run each dork; dedupe by X username; return {username: row}.
 
@@ -315,7 +367,8 @@ def search_dorks(
     on_log: optional callable(msg) for live streaming
     on_candidate: optional callable(profile_dict) — fires once per new
                   unique X profile discovered, before verification.
-                  Use to start verification in parallel with the search.
+    parallel: number of queries to run concurrently (DDG only — Brave has
+              a global 1 req/sec throttle that auto-serializes).
     """
     def emit(msg: str) -> None:
         print(msg, file=sys.stderr)
@@ -349,85 +402,99 @@ def search_dorks(
     if use_google: enabled.append("google")
     emit(f"Search starting [{'+'.join(enabled)}, {proxy_status}], {len(queries)} queries × {per_query} results")
 
-    ddgs = DDGS(proxy=PROXY_URL, timeout=20) if use_ddg else None
+    # Lock so absorb() isn't called concurrently from parallel query workers
+    absorb_lock = threading.Lock()
 
     def absorb(hits: list[dict]) -> int:
-        before = len(by_user)
-        for r in hits:
-            href = r.get("href") or ""
-            username = parse_username(href)
-            if not username or username in by_user:
-                continue
-            snippet = (r.get("body") or "").strip()
-            title = (r.get("title") or "").strip()
-            candidates = extract_candidate_urls(f"{title} {snippet}")
-            if not candidates:
-                continue
-            profile = {
-                "username": username,
-                "x_profile": f"https://x.com/{username}",
-                "bio_snippet": snippet,
-                "candidates": candidates,
-            }
-            by_user[username] = profile
-            if on_candidate is not None:
+        with absorb_lock:
+            before = len(by_user)
+            for r in hits:
+                href = r.get("href") or ""
+                username = parse_username(href)
+                if not username or username in by_user:
+                    continue
+                snippet = (r.get("body") or "").strip()
+                title = (r.get("title") or "").strip()
+                candidates = extract_candidate_urls(f"{title} {snippet}")
+                if not candidates:
+                    continue
+                profile = {
+                    "username": username,
+                    "x_profile": f"https://x.com/{username}",
+                    "bio_snippet": snippet,
+                    "candidates": candidates,
+                }
+                by_user[username] = profile
+                if on_candidate is not None:
+                    try:
+                        on_candidate(profile)
+                    except Exception:
+                        pass
+            return len(by_user) - before
+
+    brave_streak = {"n": 0}
+    streak_lock = threading.Lock()
+    completed = {"n": 0}
+    completed_lock = threading.Lock()
+
+    def run_one_query(q: str) -> str:
+        ddg_n = brave_n = google_n = 0
+        ddg_added = brave_added = google_added = 0
+        brave_skipped = False
+
+        if use_ddg:
+            try:
+                # Each query thread gets its own DDGS with a random pool proxy
+                with DDGS(proxy=get_random_proxy(), timeout=20) as ddgs_local:
+                    hits = list(ddgs_local.text(q, max_results=per_query))
+                ddg_n = len(hits)
+                ddg_added = absorb(hits)
+            except Exception:
+                pass
+
+        if use_brave:
+            with streak_lock:
+                streak = brave_streak["n"]
+            if streak >= 8:
+                brave_skipped = True
+            else:
                 try:
-                    on_candidate(profile)
+                    hits = _brave_search(q, per_query)
+                    brave_n = len(hits)
+                    brave_added = absorb(hits)
+                    with streak_lock:
+                        brave_streak["n"] = 0 if brave_added > 0 else brave_streak["n"] + 1
                 except Exception:
                     pass
-        return len(by_user) - before
 
-    try:
-        brave_zero_streak = 0
-        for i, q in enumerate(queries, 1):
-            tag = f"[{i}/{len(queries)}]"
-            ddg_n = brave_n = 0
-            ddg_added = brave_added = 0
-            if use_ddg:
-                try:
-                    hits = list(ddgs.text(q, max_results=per_query))
-                    ddg_n = len(hits)
-                    ddg_added = absorb(hits)
-                except Exception as e:
-                    emit(f"{tag} DDG ERROR  {q}  ->  {e}")
+        if use_google:
+            try:
+                hits = _google_search(q, per_query)
+                google_n = len(hits)
+                google_added = absorb(hits)
+            except Exception:
+                pass
 
-            # Skip Brave for site:x.com (Brave 422s those) — only run on twitter.com queries
-            brave_skip_reason = None
-            if use_brave:
-                if "site:x.com" in q:
-                    brave_skip_reason = "(skipped: Brave 422s site:x.com)"
-                elif brave_zero_streak >= 5:
-                    brave_skip_reason = "(skipped: Brave +0 streak)"
-                else:
-                    try:
-                        hits = _brave_search(q, per_query)
-                        brave_n = len(hits)
-                        brave_added = absorb(hits)
-                        brave_zero_streak = 0 if brave_added > 0 else brave_zero_streak + 1
-                    except Exception as e:
-                        emit(f"{tag} BRAVE ERROR  {q}  ->  {e}")
+        parts = []
+        if use_ddg:    parts.append(f"DDG {ddg_n:3d}r/+{ddg_added}")
+        if use_brave:
+            parts.append("Brave (skip)" if brave_skipped else f"Brave {brave_n:3d}r/+{brave_added}")
+        if use_google: parts.append(f"Google {google_n:3d}r/+{google_added}")
 
-            google_n = google_added = 0
-            if use_google:
-                try:
-                    hits = _google_search(q, per_query)
-                    google_n = len(hits)
-                    google_added = absorb(hits)
-                except Exception as e:
-                    emit(f"{tag} GOOGLE ERROR  {q}  ->  {e}")
+        with completed_lock:
+            completed["n"] += 1
+            tag = f"[{completed['n']}/{len(queries)}]"
+        return f"{tag} {' | '.join(parts)}  |  {q}"
 
-            parts = []
-            if use_ddg:    parts.append(f"DDG {ddg_n:3d}r/+{ddg_added}")
-            if use_brave:
-                if brave_skip_reason:
-                    parts.append(f"Brave {brave_skip_reason}")
-                else:
-                    parts.append(f"Brave {brave_n:3d}r/+{brave_added}")
-            if use_google: parts.append(f"Google {google_n:3d}r/+{google_added}")
-            emit(f"{tag} {' | '.join(parts)}  |  {q}")
-    finally:
-        if ddgs is not None:
-            ddgs.__exit__(None, None, None)
+    # Parallel queries — major speedup vs sequential. Brave's global rate
+    # limit serializes itself via _BRAVE_LAST_REQ inside _brave_search.
+    with ThreadPoolExecutor(max_workers=parallel) as pool:
+        futures = [pool.submit(run_one_query, q) for q in queries]
+        for fut in as_completed(futures):
+            try:
+                emit(fut.result())
+            except Exception as e:
+                emit(f"  query thread error: {e}")
 
     emit(f"Done. {len(by_user)} unique X profiles with at least one candidate URL.")
     return by_user

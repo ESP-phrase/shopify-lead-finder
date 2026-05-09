@@ -1,5 +1,6 @@
 # Secrets — NEVER commit
 .env
+proxies.txt
 accounts.txt
 twscrape.db
 twscrape.db-*
